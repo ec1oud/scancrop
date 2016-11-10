@@ -12,7 +12,7 @@ public:
 	void mouseMoveEvent ( QGraphicsSceneMouseEvent * ev);
 	void mousePressEvent ( QGraphicsSceneMouseEvent * ev);
 	void mouseReleaseEvent ( QGraphicsSceneMouseEvent * ev);
-	void mouseLeftClickEvent ( QGraphicsSceneMouseEvent * ev) {};
+    void mouseLeftClickEvent ( QGraphicsSceneMouseEvent * /* ev */) {};
 
 private:
 	Rectangle* box;

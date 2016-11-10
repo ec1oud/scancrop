@@ -11,20 +11,19 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QDockWidget>
-#include <QtGui/QGraphicsView>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMenu>
-#include <QtGui/QMenuBar>
-#include <QtGui/QStatusBar>
-#include <QtGui/QToolBar>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QWidget>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QDockWidget>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QStatusBar>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QVBoxLayout>
 
 QT_BEGIN_NAMESPACE
 
@@ -282,56 +281,56 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "scancrop", 0, QApplication::UnicodeUTF8));
-        actionOpen->setText(QApplication::translate("MainWindow", "Open image...", 0, QApplication::UnicodeUTF8));
-        actionOpen->setShortcut(QApplication::translate("MainWindow", "Ctrl+O", 0, QApplication::UnicodeUTF8));
-        actionSave->setText(QApplication::translate("MainWindow", "Save cropped image(s)", 0, QApplication::UnicodeUTF8));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "scancrop", 0));
+        actionOpen->setText(QApplication::translate("MainWindow", "Open image...", 0));
+        actionOpen->setShortcut(QApplication::translate("MainWindow", "Ctrl+O", 0));
+        actionSave->setText(QApplication::translate("MainWindow", "Save cropped image(s)", 0));
 #ifndef QT_NO_TOOLTIP
-        actionSave->setToolTip(QApplication::translate("MainWindow", "Save cropped image(s)", 0, QApplication::UnicodeUTF8));
+        actionSave->setToolTip(QApplication::translate("MainWindow", "Save cropped image(s)", 0));
 #endif // QT_NO_TOOLTIP
-        actionSave->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", 0, QApplication::UnicodeUTF8));
-        actionZoom_to_Fit->setText(QApplication::translate("MainWindow", "Zoom to Fit", 0, QApplication::UnicodeUTF8));
-        actionZoom_Width->setText(QApplication::translate("MainWindow", "Zoom Width", 0, QApplication::UnicodeUTF8));
-        actionPan->setText(QApplication::translate("MainWindow", "Pan", 0, QApplication::UnicodeUTF8));
-        actionPan->setShortcut(QApplication::translate("MainWindow", "F2", 0, QApplication::UnicodeUTF8));
-        actionSelect->setText(QApplication::translate("MainWindow", "Select", 0, QApplication::UnicodeUTF8));
-        actionSelect->setShortcut(QApplication::translate("MainWindow", "F1", 0, QApplication::UnicodeUTF8));
-        actionBox->setText(QApplication::translate("MainWindow", "Box", 0, QApplication::UnicodeUTF8));
-        actionBox->setShortcut(QApplication::translate("MainWindow", "F4", 0, QApplication::UnicodeUTF8));
-        actionZoom_In->setText(QApplication::translate("MainWindow", "Zoom In", 0, QApplication::UnicodeUTF8));
-        actionZoom_In->setShortcut(QApplication::translate("MainWindow", "Ctrl+=", 0, QApplication::UnicodeUTF8));
-        actionZoom_Out->setText(QApplication::translate("MainWindow", "Zoom Out", 0, QApplication::UnicodeUTF8));
-        actionZoom_Out->setShortcut(QApplication::translate("MainWindow", "Ctrl+-", 0, QApplication::UnicodeUTF8));
-        actionRotate_Clockwise->setText(QApplication::translate("MainWindow", "Rotate Clockwise", 0, QApplication::UnicodeUTF8));
-        actionRotate_Clockwise->setShortcut(QApplication::translate("MainWindow", "Ctrl+.", 0, QApplication::UnicodeUTF8));
-        actionRotate_CounterClockwise->setText(QApplication::translate("MainWindow", "Rotate CounterClockwise", 0, QApplication::UnicodeUTF8));
-        actionRotate_CounterClockwise->setShortcut(QApplication::translate("MainWindow", "Ctrl+,", 0, QApplication::UnicodeUTF8));
-        actionZoom_100->setText(QApplication::translate("MainWindow", "Zoom to 100%", 0, QApplication::UnicodeUTF8));
-        actionZoom_100->setShortcut(QApplication::translate("MainWindow", "Ctrl+1", 0, QApplication::UnicodeUTF8));
-        actionSave_template->setText(QApplication::translate("MainWindow", "Save template", 0, QApplication::UnicodeUTF8));
-        actionSave_template->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+S", 0, QApplication::UnicodeUTF8));
-        actionOpen_template->setText(QApplication::translate("MainWindow", "Open template...", 0, QApplication::UnicodeUTF8));
-        actionOpen_template->setShortcut(QApplication::translate("MainWindow", "Ctrl+T", 0, QApplication::UnicodeUTF8));
-        actionSelect_All->setText(QApplication::translate("MainWindow", "Select All", 0, QApplication::UnicodeUTF8));
-        actionSelect_All->setShortcut(QApplication::translate("MainWindow", "Ctrl+A", 0, QApplication::UnicodeUTF8));
-        actionQuit->setText(QApplication::translate("MainWindow", "Quit", 0, QApplication::UnicodeUTF8));
-        actionQuit->setShortcut(QApplication::translate("MainWindow", "Ctrl+Q", 0, QApplication::UnicodeUTF8));
-        actionZoom_25->setText(QApplication::translate("MainWindow", "Zoom 25%", 0, QApplication::UnicodeUTF8));
-        actionZoom_25->setShortcut(QApplication::translate("MainWindow", "Ctrl+2", 0, QApplication::UnicodeUTF8));
-        actionPrevious->setText(QApplication::translate("MainWindow", "Previous Image", 0, QApplication::UnicodeUTF8));
+        actionSave->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", 0));
+        actionZoom_to_Fit->setText(QApplication::translate("MainWindow", "Zoom to Fit", 0));
+        actionZoom_Width->setText(QApplication::translate("MainWindow", "Zoom Width", 0));
+        actionPan->setText(QApplication::translate("MainWindow", "Pan", 0));
+        actionPan->setShortcut(QApplication::translate("MainWindow", "F2", 0));
+        actionSelect->setText(QApplication::translate("MainWindow", "Select", 0));
+        actionSelect->setShortcut(QApplication::translate("MainWindow", "F1", 0));
+        actionBox->setText(QApplication::translate("MainWindow", "Box", 0));
+        actionBox->setShortcut(QApplication::translate("MainWindow", "F4", 0));
+        actionZoom_In->setText(QApplication::translate("MainWindow", "Zoom In", 0));
+        actionZoom_In->setShortcut(QApplication::translate("MainWindow", "Ctrl+=", 0));
+        actionZoom_Out->setText(QApplication::translate("MainWindow", "Zoom Out", 0));
+        actionZoom_Out->setShortcut(QApplication::translate("MainWindow", "Ctrl+-", 0));
+        actionRotate_Clockwise->setText(QApplication::translate("MainWindow", "Rotate Clockwise", 0));
+        actionRotate_Clockwise->setShortcut(QApplication::translate("MainWindow", "Ctrl+.", 0));
+        actionRotate_CounterClockwise->setText(QApplication::translate("MainWindow", "Rotate CounterClockwise", 0));
+        actionRotate_CounterClockwise->setShortcut(QApplication::translate("MainWindow", "Ctrl+,", 0));
+        actionZoom_100->setText(QApplication::translate("MainWindow", "Zoom to 100%", 0));
+        actionZoom_100->setShortcut(QApplication::translate("MainWindow", "Ctrl+1", 0));
+        actionSave_template->setText(QApplication::translate("MainWindow", "Save template", 0));
+        actionSave_template->setShortcut(QApplication::translate("MainWindow", "Ctrl+Shift+S", 0));
+        actionOpen_template->setText(QApplication::translate("MainWindow", "Open template...", 0));
+        actionOpen_template->setShortcut(QApplication::translate("MainWindow", "Ctrl+T", 0));
+        actionSelect_All->setText(QApplication::translate("MainWindow", "Select All", 0));
+        actionSelect_All->setShortcut(QApplication::translate("MainWindow", "Ctrl+A", 0));
+        actionQuit->setText(QApplication::translate("MainWindow", "Quit", 0));
+        actionQuit->setShortcut(QApplication::translate("MainWindow", "Ctrl+Q", 0));
+        actionZoom_25->setText(QApplication::translate("MainWindow", "Zoom 25%", 0));
+        actionZoom_25->setShortcut(QApplication::translate("MainWindow", "Ctrl+2", 0));
+        actionPrevious->setText(QApplication::translate("MainWindow", "Previous Image", 0));
 #ifndef QT_NO_TOOLTIP
-        actionPrevious->setToolTip(QApplication::translate("MainWindow", "Previous Image", 0, QApplication::UnicodeUTF8));
+        actionPrevious->setToolTip(QApplication::translate("MainWindow", "Previous Image", 0));
 #endif // QT_NO_TOOLTIP
-        actionPrevious->setShortcut(QApplication::translate("MainWindow", "PgUp", 0, QApplication::UnicodeUTF8));
-        actionNext->setText(QApplication::translate("MainWindow", "Next Image", 0, QApplication::UnicodeUTF8));
+        actionPrevious->setShortcut(QApplication::translate("MainWindow", "PgUp", 0));
+        actionNext->setText(QApplication::translate("MainWindow", "Next Image", 0));
 #ifndef QT_NO_TOOLTIP
-        actionNext->setToolTip(QApplication::translate("MainWindow", "Next Image", 0, QApplication::UnicodeUTF8));
+        actionNext->setToolTip(QApplication::translate("MainWindow", "Next Image", 0));
 #endif // QT_NO_TOOLTIP
-        actionNext->setShortcut(QApplication::translate("MainWindow", "PgDown", 0, QApplication::UnicodeUTF8));
-        menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
-        menuView->setTitle(QApplication::translate("MainWindow", "View", 0, QApplication::UnicodeUTF8));
-        menuTools->setTitle(QApplication::translate("MainWindow", "Tools", 0, QApplication::UnicodeUTF8));
-        menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
+        actionNext->setShortcut(QApplication::translate("MainWindow", "PgDown", 0));
+        menuFile->setTitle(QApplication::translate("MainWindow", "File", 0));
+        menuView->setTitle(QApplication::translate("MainWindow", "View", 0));
+        menuTools->setTitle(QApplication::translate("MainWindow", "Tools", 0));
+        menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0));
     } // retranslateUi
 
 };

@@ -8,6 +8,7 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <QGLWidget>
+#include <QHash>
 
 // 4th root of 2, so if you zoom 4 times you double the scale
 #define ZOOM_SCALE 1.189207115002721027
@@ -400,6 +401,8 @@ void MainWindow::on_actionFind_images_triggered()
 	// Circumnavigate the outer edges and find the color ranges for the background (we hope)
 	// Generate a histogram of colors
 	// (map of color to number of pixels in which it's found).
+
+    /* TODO apparently...
 	struct ranges
 	QHash<QRgb, int> histo;
 	int x = 0, y = 0, w = orig.width(), h = orig.height();
@@ -409,4 +412,5 @@ void MainWindow::on_actionFind_images_triggered()
 			QRgb color = orig.pixel(x, y);
 			histo[color] = histo[color] + 1;
 		}
+        */
 }
