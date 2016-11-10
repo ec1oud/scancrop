@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>images/default-page.png</file>
+        <file>images/tool-pan.png</file>
+        <file>images/book_next.png</file>
+        <file>images/book_previous.png</file>
+        <file>images/zoom_fit.png</file>
+        <file>images/zoom_width.png</file>
+        <file>images/save.png</file>
+        <file>images/open.png</file>
+        <file>images/draw_box.png</file>
+        <file>images/resize-handle.png</file>
+        <file>images/draw_rotated_rect.png</file>
+        <file>images/zoom_in.png</file>
+        <file>images/zoom_out.png</file>
+        <file>images/shape_rotate_anticlockwise.png</file>
+        <file>images/shape_rotate_clockwise.png</file>
+        <file>images/cursor.png</file>
+        <file>images/zoom100.png</file>
+        <file>images/save_template.png</file>
+        <file>images/open_template.png</file>
+        <file>images/zoom25.png</file>
+    </qresource>
+</RCC>

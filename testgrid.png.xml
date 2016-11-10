@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<croppings>
+<original>testgrid.png</original>
+<rectangle>
+    <x0>125.781</x0>
+    <y0>120.762</y0>
+    <x1>278.781</x1>
+    <y1>93.7616</y1>
+    <x2>309</x2>
+    <y2>265</y2>
+    <x3>156</x3>
+    <y3>292</y3>
+    <angle>10.008</angle>
+</rectangle>
+</croppings>
