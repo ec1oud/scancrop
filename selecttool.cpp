@@ -1,7 +1,7 @@
 #include "selecttool.h"
-#include "pdfscene.h"
+#include "mainimagescene.h"
 
-SelectTool::SelectTool(PDFScene* scene) :
+SelectTool::SelectTool(MainImageScene* scene) :
 	Tool(scene),
 	rubberBand(nullptr),
 	resizing(nullptr),

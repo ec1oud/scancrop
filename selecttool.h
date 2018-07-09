@@ -9,7 +9,7 @@ class SelectTool : public Tool
 {
 	Q_OBJECT
 public:
-	SelectTool(PDFScene* scene);
+	SelectTool(MainImageScene* scene);
 	void mouseMoveEvent ( QGraphicsSceneMouseEvent * ev);
 	void mousePressEvent ( QGraphicsSceneMouseEvent * ev);
 	void mouseReleaseEvent ( QGraphicsSceneMouseEvent * ev);

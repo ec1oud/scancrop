@@ -1,5 +1,5 @@
-#ifndef PDFSCENE_H
-#define PDFSCENE_H
+#ifndef MAINIMAGESCENE_H
+#define MAINIMAGESCENE_H
 
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
@@ -10,11 +10,11 @@
 #include "boxtool.h"
 #include "selecttool.h"
 
-class PDFScene : public QGraphicsScene
+class MainImageScene : public QGraphicsScene
 {
 	Q_OBJECT
 public:
-	PDFScene();
+    MainImageScene();
 	BoxTool* boxTool;
 	SelectTool* selectTool;
 	QColor colorAt(int x, int y);
@@ -37,9 +37,9 @@ protected:
 
 private:
 	QImage mainImage;
-	QGraphicsPixmapItem pdfView;
+    QGraphicsPixmapItem mainImageView;
 	Tool* tool;
 
 };
 
-#endif // PDFSCENE_H
+#endif // MAINIMAGESCENE_H

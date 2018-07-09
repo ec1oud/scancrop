@@ -1,7 +1,7 @@
 #include "boxtool.h"
-#include "pdfscene.h"
+#include "mainimagescene.h"
 
-BoxTool::BoxTool(PDFScene* scene) :
+BoxTool::BoxTool(MainImageScene* scene) :
 	Tool(scene),
 	box(nullptr)
 {

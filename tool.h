@@ -3,20 +3,20 @@
 
 #include <QObject>
 #include <QGraphicsSceneMouseEvent>
-class PDFScene;
+class MainImageScene;
 
 class Tool : public QObject
 {
 	Q_OBJECT
 public:
-	Tool(PDFScene* scn);
+	Tool(MainImageScene* scn);
 	virtual void mouseMoveEvent ( QGraphicsSceneMouseEvent * ev) = 0;
 	virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ev) = 0;
 	virtual void mouseReleaseEvent ( QGraphicsSceneMouseEvent * ev) = 0;
 	virtual void mouseLeftClickEvent ( QGraphicsSceneMouseEvent * ev) = 0;
 
 protected:
-	PDFScene* scene;
+	MainImageScene* scene;
 };
 
 #endif // TOOL_H

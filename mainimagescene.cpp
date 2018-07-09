@@ -1,35 +1,34 @@
-#include "pdfscene.h"
+#include "mainimagescene.h"
 #include "boxtool.h"
 
 #define MOUSE_CLICK_MAX_MOVEMENT 3
 
-PDFScene::PDFScene() :
+MainImageScene::MainImageScene() :
 	QGraphicsScene(),
 	boxTool(new BoxTool(this)),
 	selectTool(new SelectTool(this)),
 	tool(selectTool)
 {
-	pdfView.setZValue(0);
-	pdfView.setFlag(QGraphicsItem::ItemIsSelectable, false);
-	pdfView.setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-	addItem(&pdfView);
+    mainImageView.setZValue(0);
+    mainImageView.setFlag(QGraphicsItem::ItemIsSelectable, false);
+    mainImageView.setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    addItem(&mainImageView);
 }
 
-void PDFScene::image(QImage pm)
+void MainImageScene::image(QImage pm)
 {
 	mainImage = pm;
-	pdfView.setPixmap(QPixmap::fromImage(pm));
-//	pdfView.setFlags(0);
+    mainImageView.setPixmap(QPixmap::fromImage(pm));
 //	setSceneRect(0, 0, pm.width(), pm.height());
-	pdfView.setFlag(QGraphicsItem::ItemIsSelectable, false);
+    mainImageView.setFlag(QGraphicsItem::ItemIsSelectable, false);
 }
 
-QColor PDFScene::colorAt(int x, int y)
+QColor MainImageScene::colorAt(int x, int y)
 {
 	return mainImage.pixel(x, y);
 }
 
-void PDFScene::mouseMoveEvent ( QGraphicsSceneMouseEvent * ev)
+void MainImageScene::mouseMoveEvent ( QGraphicsSceneMouseEvent * ev)
 {
 	if (tool)
 		tool->mouseMoveEvent(ev);
@@ -38,7 +37,7 @@ void PDFScene::mouseMoveEvent ( QGraphicsSceneMouseEvent * ev)
 	emit cursorPos(ev->scenePos());
 }
 
-void PDFScene::mousePressEvent ( QGraphicsSceneMouseEvent * ev)
+void MainImageScene::mousePressEvent ( QGraphicsSceneMouseEvent * ev)
 {
 	if (tool)
 		tool->mousePressEvent(ev);
@@ -46,7 +45,7 @@ void PDFScene::mousePressEvent ( QGraphicsSceneMouseEvent * ev)
 		QGraphicsScene::mousePressEvent(ev);
 }
 
-void PDFScene::mouseReleaseEvent ( QGraphicsSceneMouseEvent * ev)
+void MainImageScene::mouseReleaseEvent ( QGraphicsSceneMouseEvent * ev)
 {
 //	qDebug("mouse release buttons %X", (int)ev->buttons());
 	if (tool)
@@ -61,7 +60,7 @@ void PDFScene::mouseReleaseEvent ( QGraphicsSceneMouseEvent * ev)
 		QGraphicsScene::mouseReleaseEvent(ev);
 }
 
-void PDFScene::keyPressEvent ( QKeyEvent * ev )
+void MainImageScene::keyPressEvent ( QKeyEvent * ev )
 {
 	switch (ev->key())
 	{
@@ -78,20 +77,19 @@ void PDFScene::keyPressEvent ( QKeyEvent * ev )
 	}
 }
 
-QImage PDFScene::image()
+QImage MainImageScene::image()
 {
-	return pdfView.pixmap().toImage();
+    return mainImageView.pixmap().toImage();
 }
 
-bool PDFScene::openImage(QString path)
+bool MainImageScene::openImage(QString path)
 {
 	QPixmap pm(path);
 	if (pm.isNull())
 		return false;
-	mainImage = QImage(path);
-	pdfView.setPixmap(pm);
-//	pdfView.setFlags(0);
-	pdfView.setFlag(QGraphicsItem::ItemIsSelectable, false);
+    mainImage = pm.toImage();
+    mainImageView.setPixmap(pm);
+    mainImageView.setFlag(QGraphicsItem::ItemIsSelectable, false);
 	foreach(QGraphicsItem* i, items())
 		if (i->type() == Rectangle::Type)
 		{

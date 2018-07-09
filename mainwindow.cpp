@@ -27,18 +27,18 @@ MainWindow::MainWindow(QStringList mainArgs, QWidget *parent) :
 //				&doc, SLOT(renderSize(QSize)));
 //	connect(&doc, SIGNAL(rendering(bool)),
 //				ui->imageViewer, SLOT(lookBusy(bool)));
-	ui->graphicsView->setScene(&pdfScene);
-	ui->topLeftView->setScene(&pdfScene);
-	ui->topRightView->setScene(&pdfScene);
-	ui->bottomLeftView->setScene(&pdfScene);
-	ui->bottomRightView->setScene(&pdfScene);
+    ui->graphicsView->setScene(&mainScene);
+    ui->topLeftView->setScene(&mainScene);
+    ui->topRightView->setScene(&mainScene);
+    ui->bottomLeftView->setScene(&mainScene);
+    ui->bottomRightView->setScene(&mainScene);
 	ui->topLeftView->scale(2.0, 2.0);
 	ui->topRightView->scale(2.0, 2.0);
 	ui->bottomLeftView->scale(2.0, 2.0);
 	ui->bottomRightView->scale(2.0, 2.0);
-	connect(&pdfScene, SIGNAL(cursorPos(QPointF)),
+    connect(&mainScene, SIGNAL(cursorPos(QPointF)),
 			this, SLOT(cursorMoved(QPointF)));
-	connect(pdfScene.selectTool, SIGNAL(selectionChanged()),
+    connect(mainScene.selectTool, SIGNAL(selectionChanged()),
 			this, SLOT(selectionChanged()));
 	ui->actionSelect->setChecked(true);
 //	ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
@@ -76,7 +76,7 @@ bool MainWindow::openImage(QString fpath)
 	openedImage = QFileInfo(fpath);
 	if (!openedImage.exists())
 		return false;
-	return pdfScene.openImage(fpath);
+    return mainScene.openImage(fpath);
 	/// @todo needs to be after a delay
 //	ui->actionZoom_to_Fit->trigger();
 //	on_actionZoom_to_Fit_triggered();
@@ -103,7 +103,7 @@ void MainWindow::openTemplate(QString fpath)
 				if (r.name() == "rectangle")
 				{
 					Rectangle* rect = new Rectangle(r);
-					pdfScene.addItem(rect);
+                    mainScene.addItem(rect);
 				}
 				originalTag = (r.name() == "original");
 				break;
@@ -146,7 +146,7 @@ void MainWindow::openTemplate(QString fpath)
 
 void MainWindow::cursorMoved(QPointF pos)
 {
-	QColor color = pdfScene.colorAt((int)pos.x(), (int)pos.y());
+    QColor color = mainScene.colorAt((int)pos.x(), (int)pos.y());
 	ui->statusBar->showMessage(QString("%1, %2 scale %3% color %4, %5, %6 brightness %7%")
 							   .arg(pos.x()).arg(pos.y())
 							   .arg(ui->graphicsView->matrix().m11() * 100.0, 0, 'f', 0)
@@ -156,9 +156,9 @@ void MainWindow::cursorMoved(QPointF pos)
 
 void MainWindow::selectionChanged()
 {
-	if (pdfScene.selectedItems().count() > 0)
+    if (mainScene.selectedItems().count() > 0)
 	{
-		QGraphicsItem* i = pdfScene.selectedItems()[0];
+        QGraphicsItem* i = mainScene.selectedItems()[0];
 		if (i->type() == Rectangle::Type)
 		{
 			Rectangle* rect = (Rectangle*)i;
@@ -178,7 +178,6 @@ void MainWindow::on_actionOpen_triggered()
 	if (fpath.isEmpty())
 		return;
 	open(fpath);
-//	doc.openPDF(fpath);
 //	thumbnailScene.layout();
 }
 
@@ -190,8 +189,8 @@ void MainWindow::on_actionPan_toggled(bool checked)
 		ui->actionSelect->setChecked(false);
 //		ui->graphicsView->viewport()->setCursor(Qt::OpenHandCursor);
 		ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
-		pdfScene.setTool(nullptr);
-		foreach(QGraphicsItem* i, pdfScene.items())
+        mainScene.setTool(nullptr);
+        foreach(QGraphicsItem* i, mainScene.items())
 			i->setFlags(0);
 	}
 }
@@ -204,8 +203,8 @@ void MainWindow::on_actionSelect_toggled(bool checked)
 		ui->actionPan->setChecked(false);
 		ui->graphicsView->viewport()->setCursor(Qt::ArrowCursor);
 		ui->graphicsView->setDragMode(QGraphicsView::NoDrag);
-		pdfScene.setTool(pdfScene.selectTool);
-		foreach(QGraphicsItem* i, pdfScene.items())
+        mainScene.setTool(mainScene.selectTool);
+        foreach(QGraphicsItem* i, mainScene.items())
 			i->setFlags(QGraphicsItem::ItemIsSelectable);
 	}
 }
@@ -218,8 +217,8 @@ void MainWindow::on_actionBox_toggled(bool checked)
 		ui->actionSelect->setChecked(false);
 		ui->graphicsView->viewport()->setCursor(Qt::CrossCursor);
 		ui->graphicsView->setDragMode(QGraphicsView::NoDrag);
-		pdfScene.setTool(pdfScene.boxTool);
-		foreach(QGraphicsItem* i, pdfScene.items())
+        mainScene.setTool(mainScene.boxTool);
+        foreach(QGraphicsItem* i, mainScene.items())
 			i->setFlags(0);
 	}
 }
@@ -236,7 +235,7 @@ void MainWindow::on_actionZoom_Out_triggered()
 
 void MainWindow::on_actionRotate_Clockwise_triggered()
 {
-	foreach(QGraphicsItem* i, pdfScene.selectedItems())
+    foreach(QGraphicsItem* i, mainScene.selectedItems())
 	{
 		if (i->type() == Rectangle::Type)
 		{
@@ -248,7 +247,7 @@ void MainWindow::on_actionRotate_Clockwise_triggered()
 
 void MainWindow::on_actionRotate_CounterClockwise_triggered()
 {
-	foreach(QGraphicsItem* i, pdfScene.selectedItems())
+    foreach(QGraphicsItem* i, mainScene.selectedItems())
 	{
 		if (i->type() == Rectangle::Type)
 		{
@@ -260,9 +259,9 @@ void MainWindow::on_actionRotate_CounterClockwise_triggered()
 
 void MainWindow::on_actionSave_triggered()
 {
-	QImage whole = pdfScene.image();
+    QImage whole = mainScene.image();
 	int subpart = 0;
-	foreach(QGraphicsItem* i, pdfScene.items())
+    foreach(QGraphicsItem* i, mainScene.items())
 		if (i->type() == Rectangle::Type)
 		{
 			Rectangle* rect = (Rectangle*)i;
@@ -311,8 +310,7 @@ void MainWindow::on_actionZoom_100_triggered()
 
 void MainWindow::on_actionSelect_All_triggered()
 {
-//	pdfScene.setSelectionArea(pdfScene.itemsBoundingRect());
-	foreach(QGraphicsItem* i, pdfScene.items())
+    foreach(QGraphicsItem* i, mainScene.items())
 		if (i->type() == Rectangle::Type)
 			i->setSelected(true);
 }
@@ -335,7 +333,7 @@ void MainWindow::on_actionSave_template_triggered()
 	w.writeStartDocument();
 	w.writeStartElement("croppings");
 	w.writeTextElement("original", openedImage.fileName());
-	foreach(QGraphicsItem* i, pdfScene.items())
+    foreach(QGraphicsItem* i, mainScene.items())
 		if (i->type() == Rectangle::Type)
 			((Rectangle*)i)->writeXML(w);
 	w.writeEndElement();
@@ -361,8 +359,8 @@ void MainWindow::on_actionZoom_25_triggered()
 
 void MainWindow::on_actionZoom_to_Fit_triggered()
 {
-	qreal scale = (ui->graphicsView->height() - 10) / pdfScene.height();
-	qreal scalew = (ui->graphicsView->width() - 10) / pdfScene.width();
+    qreal scale = (ui->graphicsView->height() - 10) / mainScene.height();
+    qreal scalew = (ui->graphicsView->width() - 10) / mainScene.width();
 	if (scalew < scale)
 		scale = scalew;
 	ui->graphicsView->scale(scale / ui->graphicsView->matrix().m11(),
@@ -371,7 +369,7 @@ void MainWindow::on_actionZoom_to_Fit_triggered()
 
 void MainWindow::on_actionZoom_Width_triggered()
 {
-	qreal scale = (ui->graphicsView->width() - 10) / pdfScene.width();
+    qreal scale = (ui->graphicsView->width() - 10) / mainScene.width();
 	ui->graphicsView->scale(scale / ui->graphicsView->matrix().m11(),
 							scale / ui->graphicsView->matrix().m11());
 }
@@ -398,7 +396,7 @@ void MainWindow::updateNextPrevious()
 
 void MainWindow::on_actionFind_images_triggered()
 {
-	QImage whole = pdfScene.image();
+    QImage whole = mainScene.image();
 
 	// Circumnavigate the outer edges and find the color ranges for the background (we hope)
 	// Generate a histogram of colors

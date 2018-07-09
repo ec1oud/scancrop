@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "pdfscene.h"
+#include "mainimagescene.h"
 
 #include <QMainWindow>
 #include <QLineEdit>
@@ -50,7 +50,7 @@ private slots:
 
 private:
 	Ui::MainWindow *ui;
-	PDFScene pdfScene;
+    MainImageScene mainScene;
 	QFileInfo openedImage;
 	QFileInfo openedTemplate;
 	QStringList args;

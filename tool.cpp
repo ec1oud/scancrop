@@ -1,7 +1,7 @@
 #include "tool.h"
-#include "pdfscene.h"
+#include "mainimagescene.h"
 
-Tool::Tool(PDFScene* scn) :
+Tool::Tool(MainImageScene* scn) :
 	scene(scn)
 {
 }

@@ -8,7 +8,7 @@
 class BoxTool : public Tool
 {
 public:
-	BoxTool(PDFScene* scene);
+	BoxTool(MainImageScene* scene);
 	void mouseMoveEvent ( QGraphicsSceneMouseEvent * ev);
 	void mousePressEvent ( QGraphicsSceneMouseEvent * ev);
 	void mouseReleaseEvent ( QGraphicsSceneMouseEvent * ev);

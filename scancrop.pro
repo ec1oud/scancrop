@@ -8,19 +8,19 @@ CONFIG += debug
 SOURCES += main.cpp \
 	mainwindow.cpp \
 	imagewidget.cpp \
-	pdfscene.cpp \
 	tool.cpp \
 	boxtool.cpp \
 	selecttool.cpp \
-	rectangle.cpp
+	rectangle.cpp \
+    mainimagescene.cpp
 HEADERS += mainwindow.h \
 	imagewidget.h \
 	common.h \
-	pdfscene.h \
 	tool.h \
 	boxtool.h \
 	selecttool.h \
-	rectangle.h
+	rectangle.h \
+    mainimagescene.h
 FORMS += mainwindow.ui
 
 # LIBS += -lpoppler-qt4
