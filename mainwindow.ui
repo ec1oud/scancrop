@@ -26,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>924</width>
-     <height>24</height>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -156,7 +156,7 @@
   </widget>
   <action name="actionOpen">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/open.png</normaloff>:/images/open.png</iconset>
    </property>
    <property name="text">
@@ -168,7 +168,7 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/save.png</normaloff>:/images/save.png</iconset>
    </property>
    <property name="text">
@@ -183,16 +183,19 @@
   </action>
   <action name="actionZoom_to_Fit">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/zoom_fit.png</normaloff>:/images/zoom_fit.png</iconset>
    </property>
    <property name="text">
     <string>Zoom to Fit</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+0</string>
+   </property>
   </action>
   <action name="actionZoom_Width">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/zoom_width.png</normaloff>:/images/zoom_width.png</iconset>
    </property>
    <property name="text">
@@ -204,7 +207,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/tool-pan.png</normaloff>:/images/tool-pan.png</iconset>
    </property>
    <property name="text">
@@ -219,7 +222,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/cursor.png</normaloff>:/images/cursor.png</iconset>
    </property>
    <property name="text">
@@ -234,7 +237,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/draw_box.png</normaloff>:/images/draw_box.png</iconset>
    </property>
    <property name="text">
@@ -246,7 +249,7 @@
   </action>
   <action name="actionZoom_In">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/zoom_in.png</normaloff>:/images/zoom_in.png</iconset>
    </property>
    <property name="text">
@@ -258,7 +261,7 @@
   </action>
   <action name="actionZoom_Out">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/zoom_out.png</normaloff>:/images/zoom_out.png</iconset>
    </property>
    <property name="text">
@@ -270,7 +273,7 @@
   </action>
   <action name="actionRotate_Clockwise">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/shape_rotate_clockwise.png</normaloff>:/images/shape_rotate_clockwise.png</iconset>
    </property>
    <property name="text">
@@ -282,7 +285,7 @@
   </action>
   <action name="actionRotate_CounterClockwise">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/shape_rotate_anticlockwise.png</normaloff>:/images/shape_rotate_anticlockwise.png</iconset>
    </property>
    <property name="text">
@@ -294,7 +297,7 @@
   </action>
   <action name="actionZoom_100">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/zoom100.png</normaloff>:/images/zoom100.png</iconset>
    </property>
    <property name="text">
@@ -306,7 +309,7 @@
   </action>
   <action name="actionSave_template">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/save_template.png</normaloff>:/images/save_template.png</iconset>
    </property>
    <property name="text">
@@ -318,7 +321,7 @@
   </action>
   <action name="actionOpen_template">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/open_template.png</normaloff>:/images/open_template.png</iconset>
    </property>
    <property name="text">
@@ -346,7 +349,7 @@
   </action>
   <action name="actionZoom_25">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/zoom25.png</normaloff>:/images/zoom25.png</iconset>
    </property>
    <property name="text">
@@ -358,7 +361,7 @@
   </action>
   <action name="actionPrevious">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/book_previous.png</normaloff>:/images/book_previous.png</iconset>
    </property>
    <property name="text">
@@ -373,7 +376,7 @@
   </action>
   <action name="actionNext">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/images/book_next.png</normaloff>:/images/book_next.png</iconset>
    </property>
    <property name="text">
@@ -393,6 +396,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
