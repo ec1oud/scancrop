@@ -7,7 +7,6 @@
 #include <QLibraryInfo>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
-#include <QGLWidget>
 #include <QHash>
 
 // 4th root of 2, so if you zoom 4 times you double the scale
@@ -41,7 +40,6 @@ MainWindow::MainWindow(QStringList mainArgs, QWidget *parent) :
     connect(mainScene.selectTool, SIGNAL(selectionChanged()),
 			this, SLOT(selectionChanged()));
 	ui->actionSelect->setChecked(true);
-//	ui->graphicsView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 	if (args.count() > 0)
 		open(args.first());
 	updateNextPrevious();
@@ -396,13 +394,14 @@ void MainWindow::updateNextPrevious()
 
 void MainWindow::on_actionFind_images_triggered()
 {
-    QImage whole = mainScene.image();
+    qDebug() << mainScene.detectPhotoBoundaries();
 
+    // Another idea:
 	// Circumnavigate the outer edges and find the color ranges for the background (we hope)
 	// Generate a histogram of colors
 	// (map of color to number of pixels in which it's found).
 
-    /* TODO apparently...
+    /* TODO
 	struct ranges
 	QHash<QRgb, int> histo;
 	int x = 0, y = 0, w = orig.width(), h = orig.height();

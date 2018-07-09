@@ -18,6 +18,7 @@ public:
 	BoxTool* boxTool;
 	SelectTool* selectTool;
 	QColor colorAt(int x, int y);
+    QVector<QRectF> detectPhotoBoundaries();
 
 signals:
 	void cursorPos(QPointF pos);

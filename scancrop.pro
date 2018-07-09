@@ -1,7 +1,4 @@
-# -------------------------------------------------
-# Project created by QtCreator 2009-05-13T21:44:43
-# -------------------------------------------------
-QT += xml opengl
+QT += widgets xml
 TARGET = scancrop
 TEMPLATE = app
 CONFIG += debug
@@ -23,11 +20,16 @@ HEADERS += mainwindow.h \
     mainimagescene.h
 FORMS += mainwindow.ui
 
-# LIBS += -lpoppler-qt4
-# LIBS += -L/usr/local/lib \
-# -lpoppler-qt4 \
-# -lpoppler
-# ~ LIBS += libpoppler.so.5 \
-# ~ libpoppler-qt4.so
-# INCLUDEPATH += /usr/local/include/poppler/qt4
+!isEmpty(OPENCV_DIR) {
+    INCLUDEPATH += $$OPENCV_DIR/include
+    LIBS += -L $$OPENCV_DIR/lib
+}
+
+!contains(QT_CONFIG, no-pkg-config) {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += opencv
+} else {
+    LIBS += -lopencv_core -lopencv_imgproc -lopencv_objdetect
+}
+
 RESOURCES += icons.qrc

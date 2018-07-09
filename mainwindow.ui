@@ -391,7 +391,13 @@
   </action>
   <action name="actionFind_images">
    <property name="text">
-    <string>Find images</string>
+    <string>Detect image edges</string>
+   </property>
+   <property name="toolTip">
+    <string>Find photos on the page</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
  </widget>
