@@ -3,9 +3,9 @@
 
 SelectTool::SelectTool(PDFScene* scene) :
 	Tool(scene),
-	rubberBand(NULL),
-	resizing(NULL),
-	dragging(NULL)
+	rubberBand(nullptr),
+	resizing(nullptr),
+	dragging(nullptr)
 {
 	QPen dashPen(Qt::black);
 	QVector<qreal> dashes;
@@ -21,8 +21,8 @@ void SelectTool::mousePressEvent ( QGraphicsSceneMouseEvent * ev)
 	QList<QGraphicsItem *> itemsHere = scene->items(pos);
 //	qDebug("on mouse press, found %d items", itemsHere.count());
 //	QGraphicsItem* sel = scene->itemAt(pos);
-	dragging = NULL;
-	resizing = NULL;
+	dragging = nullptr;
+	resizing = nullptr;
 	if (itemsHere.count() > 0 && itemsHere[0]->type() > QGraphicsItem::UserType)
 	{
 		// Mouse was pressed on a UserType item.
@@ -35,7 +35,7 @@ void SelectTool::mousePressEvent ( QGraphicsSceneMouseEvent * ev)
 			// See which resize handle, if any, is under the cursor.
 			resizingHandle = item->handleAt(ev->scenePos());
 			qDebug("pressed handle %d, polygon corner %d", resizingHandle, ((int)resizingHandle) - 1);
-			resizing = (resizingHandle == Rectangle::RH_NONE ? NULL : item);
+			resizing = (resizingHandle == Rectangle::RH_NONE ? nullptr : item);
 			if (resizing)
 				resizing->startResize();
 		}
@@ -85,7 +85,7 @@ void SelectTool::mouseReleaseEvent ( QGraphicsSceneMouseEvent * ev )
 		if (resizing)
 		{
 //			resizing->setRect(resizing->rect().normalized());
-			resizing = NULL;
+			resizing = nullptr;
 		}
 		else
 		{
@@ -97,7 +97,7 @@ void SelectTool::mouseReleaseEvent ( QGraphicsSceneMouseEvent * ev )
 					i->setSelected(false);
 			qDebug("selected %d items", scene->selectedItems().count());
 		}
-		dragging = NULL;
+		dragging = nullptr;
 	}
 	emit selectionChanged();
 }

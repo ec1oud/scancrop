@@ -138,6 +138,8 @@ void MainWindow::openTemplate(QString fpath)
 					}
 				}
 				break;
+            default:
+                break;
 		}
 	}
 }
@@ -188,7 +190,7 @@ void MainWindow::on_actionPan_toggled(bool checked)
 		ui->actionSelect->setChecked(false);
 //		ui->graphicsView->viewport()->setCursor(Qt::OpenHandCursor);
 		ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
-		pdfScene.setTool(NULL);
+		pdfScene.setTool(nullptr);
 		foreach(QGraphicsItem* i, pdfScene.items())
 			i->setFlags(0);
 	}

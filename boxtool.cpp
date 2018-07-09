@@ -3,7 +3,7 @@
 
 BoxTool::BoxTool(PDFScene* scene) :
 	Tool(scene),
-	box(NULL)
+	box(nullptr)
 {
 }
 
@@ -25,9 +25,9 @@ void BoxTool::mouseMoveEvent ( QGraphicsSceneMouseEvent * ev)
 	}
 }
 
-void BoxTool::mouseReleaseEvent ( QGraphicsSceneMouseEvent * ev)
+void BoxTool::mouseReleaseEvent ( QGraphicsSceneMouseEvent * /* ev */)
 {
 //	if (box)
 //		box->setRect(box->rect().normalized());
-	box = NULL;
+	box = nullptr;
 }

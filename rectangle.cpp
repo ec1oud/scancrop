@@ -4,7 +4,7 @@
 #include <math.h>
 #include <QtDebug>
 
-QPixmap* Rectangle::resizeHandle(NULL);
+QPixmap* Rectangle::resizeHandle(nullptr);
 
 #define HANDLE_MARGIN 10
 #define HANDLE_VIRTUAL_SIZE 50
@@ -63,6 +63,7 @@ Rectangle::Rectangle(QXmlStreamReader& r)
 						}
 					}
 				}
+                break;
 			case QXmlStreamReader::EndElement:
 //				qDebug() << "endElement" << r.name();
 				if (r.name() == "rectangle")
@@ -76,6 +77,8 @@ Rectangle::Rectangle(QXmlStreamReader& r)
 					xOrY = 0;
 				}
 				break;
+            default:
+                break;
 		}
 		t = r.readNext();
 	}
@@ -108,7 +111,7 @@ qreal Rectangle::rotation() const
 
 Rectangle::ResizeHandleIdx Rectangle::handleAt(QPointF pos)
 {
-	int hw = handleWidth();
+//	int hw = handleWidth();
 	QPolygonF poly = polygon();
 //	QRectF bounds = QGraphicsPolygonItem::boundingRect();
 	QRectF handleBounds(0, 0, HANDLE_VIRTUAL_SIZE, HANDLE_VIRTUAL_SIZE);
@@ -243,6 +246,8 @@ void Rectangle::resize(ResizeHandleIdx hidx, QPointF pos)
 		}
 		poly[3] = pos;
 		break;
+    default:
+        break;
 	}
 	prepareGeometryChange();
 //	setRect(bounds);
@@ -310,7 +315,7 @@ void Rectangle::paint ( QPainter * painter, const QStyleOptionGraphicsItem * opt
 //	qDebug("Rectangle::paint; selected? %d", isSelected());
 	painter->setCompositionMode(QPainter::CompositionMode_Xor);
 	QGraphicsPolygonItem::paint(painter, option, widget);
-	QRectF bounds = boundingRect();
+//	QRectF bounds = boundingRect();
 //	painter->drawLine(bounds.x(), bounds.y(), 0, 0);
 	if (isSelected())
 	{
