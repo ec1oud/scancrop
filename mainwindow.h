@@ -48,6 +48,8 @@ private slots:
 	void on_actionPan_toggled(bool );
 	void on_actionOpen_triggered();
 
+    void on_actionToggle_image_visible_triggered();
+
 private:
 	Ui::MainWindow *ui;
     MainImageScene mainScene;

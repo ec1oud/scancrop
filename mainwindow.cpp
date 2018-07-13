@@ -413,3 +413,9 @@ void MainWindow::on_actionFind_images_triggered()
 		}
         */
 }
+
+void MainWindow::on_actionToggle_image_visible_triggered()
+{
+    auto &image = mainScene.imageView();
+    image.setVisible(!image.isVisible());
+}

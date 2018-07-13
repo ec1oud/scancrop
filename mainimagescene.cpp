@@ -41,58 +41,39 @@ QVector<QRectF> MainImageScene::detectPhotoBoundaries()
     using namespace cv;
     using namespace std;
     Mat src, cannyEdges;
-    //~ imshow("source", mat);
     cvtColor(mat, src, CV_BGR2GRAY);
     Canny(src, cannyEdges, 50, 100, 3);
 
-//mainImage = QImage(cannyEdges.data, cannyEdges.cols, cannyEdges.rows, int(cannyEdges.step), QImage::Format_Grayscale8);
-//mainImageView.setPixmap(QPixmap::fromImage(mainImage));
-//    imshow("canny output", cannyEdges);
-//    std::vector<Vec4i> lines;
-//    HoughLinesP(dst, lines, 1, CV_PI/180, 32, 32, 10 );
-    vector<vector<Point> > contours;
-    vector<vector<Point> > approxContours;
-    findContours(cannyEdges, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
-    qDebug() << "found contours" << contours.size();
-
-    vector<Point2f> outerPts(4);
-    for (auto contour : contours) {
-QVector<QPointF> qpts;
-for(Point p : contour)
-    qpts << QPointF(p.x, p.y);
-QGraphicsPolygonItem *pgn = new QGraphicsPolygonItem(QPolygonF(qpts));
-pgn->setPen(QPen(Qt::cyan));
-addItem(pgn);
-        vector<Point> approx;
-        approxPolyDP(contour, approx, arcLength(contour, true) * 0.05, true);
-        if (contourArea(approx, false) < MIN_CONTOUR_AREA)
-            continue;
-        auto rect = minAreaRect(contour);
-        Point2f pts[4];
-        rect.points(pts);
-
-QVector<QPointF> bpts;
-bpts << QPointF(pts[0].x, pts[0].y) << QPointF(pts[1].x, pts[1].y) << QPointF(pts[2].x, pts[2].y) << QPointF(pts[3].x, pts[3].y);
-pgn = new QGraphicsPolygonItem(QPolygonF(bpts));
-pgn->setPen(QPen(Qt::green));
-addItem(pgn);
-
-        outerPts[0].x = outerPts[0].x < pts[0].x ? outerPts[0].x : pts[0].x;
-        outerPts[0].y = outerPts[0].y > pts[0].y ? outerPts[0].y : pts[0].y;
-        outerPts[1].x = outerPts[1].x < pts[1].x ? outerPts[1].x : pts[1].x;
-        outerPts[1].y = outerPts[1].y < pts[1].y ? outerPts[1].y : pts[1].y;
-        outerPts[2].x = outerPts[2].x > pts[2].x ? outerPts[2].x : pts[2].x;
-        outerPts[2].y = outerPts[2].y < pts[2].y ? outerPts[2].y : pts[2].y;
-        outerPts[3].x = outerPts[3].x > pts[3].x ? outerPts[3].x : pts[3].x;
-        outerPts[3].y = outerPts[3].y > pts[3].y ? outerPts[3].y : pts[3].y;
+    std::vector<Vec4i> lines;
+    HoughLinesP(cannyEdges, lines, 1, CV_PI/180, 32, 32, 10 );
+    vector<Point> pointset;
+    for( size_t i = 0; i < lines.size(); i++ ) {
+        QGraphicsLineItem *l = new QGraphicsLineItem(lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
+        l->setPen(QPen(Qt::red));
+        addItem(l);
+        pointset.push_back(Point(lines[i][0], lines[i][1]));
+        pointset.push_back(Point(lines[i][2], lines[i][3]));
     }
-    RotatedRect rect = minAreaRect(outerPts);
+
+    vector<Point> convex_hull;
+    convexHull(pointset, convex_hull);
+    qDebug() << "convex hull has" << convex_hull.size();
+
+    QVector<QPointF> bpts;
+    for (Point p : convex_hull)
+        bpts << QPointF(p.x, p.y);
+
+    QGraphicsPolygonItem *pgn = new QGraphicsPolygonItem(QPolygonF(bpts));
+    pgn->setPen(QPen(Qt::green));
+    addItem(pgn);
+
+    RotatedRect rect = minAreaRect(convex_hull);
     QRectF r(0, 0, rect.size.width, rect.size.height);
     r.moveCenter(QPointF(rect.center.x, rect.center.y));
     ret << r;
-    qDebug() << "image size" << rgb.width() << rgb.height() << "outer rect center" << rect.center.x << rect.center.y << "size" << rect.size.width << rect.size.height;
 
     Rectangle *box = new Rectangle(r.x(), r.y(), r.width(), r.height());
+    box->setPen(QPen(Qt::magenta));
     addItem(box);
     box->setZValue(1.0);
 

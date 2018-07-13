@@ -19,6 +19,7 @@ public:
 	SelectTool* selectTool;
 	QColor colorAt(int x, int y);
     QVector<QRectF> detectPhotoBoundaries();
+    QGraphicsPixmapItem &imageView() { return mainImageView; }
 
 signals:
 	void cursorPos(QPointF pos);

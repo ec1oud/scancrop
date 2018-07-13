@@ -49,6 +49,7 @@
     <addaction name="actionZoom_25"/>
     <addaction name="actionZoom_to_Fit"/>
     <addaction name="actionZoom_Width"/>
+    <addaction name="actionToggle_image_visible"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -398,6 +399,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionToggle_image_visible">
+   <property name="text">
+    <string>Toggle image visible</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
    </property>
   </action>
  </widget>
