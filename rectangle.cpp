@@ -66,7 +66,7 @@ Rectangle::Rectangle(QXmlStreamReader& r)
                 break;
 			case QXmlStreamReader::EndElement:
 //				qDebug() << "endElement" << r.name();
-				if (r.name() == "rectangle")
+                if (r.name() == u"rectangle")
 					done = true;
 				else if (r.name().length() > 1 && r.name().at(0) == 'y')
 				{

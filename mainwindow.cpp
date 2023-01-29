@@ -98,12 +98,12 @@ void MainWindow::openTemplate(QString fpath)
 		switch (t)
 		{
 			 case QXmlStreamReader::StartElement:
-				if (r.name() == "rectangle")
+                if (r.name() == u"rectangle")
 				{
 					Rectangle* rect = new Rectangle(r);
                     mainScene.addItem(rect);
 				}
-				originalTag = (r.name() == "original");
+                originalTag = (r.name() == u"original");
 				break;
 			case QXmlStreamReader::Characters:
 				if (originalTag)
@@ -147,7 +147,7 @@ void MainWindow::cursorMoved(QPointF pos)
     QColor color = mainScene.colorAt((int)pos.x(), (int)pos.y());
 	ui->statusBar->showMessage(QString("%1, %2 scale %3% color %4, %5, %6 brightness %7%")
 							   .arg(pos.x()).arg(pos.y())
-							   .arg(ui->graphicsView->matrix().m11() * 100.0, 0, 'f', 0)
+                               .arg(ui->graphicsView->transform().m11() * 100.0, 0, 'f', 0)
 							   .arg(color.red()).arg(color.blue()).arg(color.green())
 							   .arg(((float)color.toHsv().value()) / 255.0 * 100.0));
 }
@@ -188,8 +188,8 @@ void MainWindow::on_actionPan_toggled(bool checked)
 //		ui->graphicsView->viewport()->setCursor(Qt::OpenHandCursor);
 		ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
         mainScene.setTool(nullptr);
-        foreach(QGraphicsItem* i, mainScene.items())
-			i->setFlags(0);
+        for (QGraphicsItem* i : mainScene.items())
+            i->setFlags(static_cast<QGraphicsItem::GraphicsItemFlags>(0));
 	}
 }
 
@@ -202,7 +202,7 @@ void MainWindow::on_actionSelect_toggled(bool checked)
 		ui->graphicsView->viewport()->setCursor(Qt::ArrowCursor);
 		ui->graphicsView->setDragMode(QGraphicsView::NoDrag);
         mainScene.setTool(mainScene.selectTool);
-        foreach(QGraphicsItem* i, mainScene.items())
+        for (QGraphicsItem *i : mainScene.items())
 			i->setFlags(QGraphicsItem::ItemIsSelectable);
 	}
 }
@@ -216,8 +216,8 @@ void MainWindow::on_actionBox_toggled(bool checked)
 		ui->graphicsView->viewport()->setCursor(Qt::CrossCursor);
 		ui->graphicsView->setDragMode(QGraphicsView::NoDrag);
         mainScene.setTool(mainScene.boxTool);
-        foreach(QGraphicsItem* i, mainScene.items())
-			i->setFlags(0);
+        for (QGraphicsItem *i : mainScene.items())
+            i->setFlags(static_cast<QGraphicsItem::GraphicsItemFlags>(0));
 	}
 }
 
@@ -233,7 +233,7 @@ void MainWindow::on_actionZoom_Out_triggered()
 
 void MainWindow::on_actionRotate_Clockwise_triggered()
 {
-    foreach(QGraphicsItem* i, mainScene.selectedItems())
+    for (QGraphicsItem *i : mainScene.selectedItems())
 	{
 		if (i->type() == Rectangle::Type)
 		{
@@ -245,7 +245,7 @@ void MainWindow::on_actionRotate_Clockwise_triggered()
 
 void MainWindow::on_actionRotate_CounterClockwise_triggered()
 {
-    foreach(QGraphicsItem* i, mainScene.selectedItems())
+    for (QGraphicsItem *i : mainScene.selectedItems())
 	{
 		if (i->type() == Rectangle::Type)
 		{
@@ -259,7 +259,7 @@ void MainWindow::on_actionSave_triggered()
 {
     QImage whole = mainScene.image();
 	int subpart = 0;
-    foreach(QGraphicsItem* i, mainScene.items())
+    for (QGraphicsItem *i : mainScene.items())
 		if (i->type() == Rectangle::Type)
 		{
 			Rectangle* rect = (Rectangle*)i;
@@ -267,7 +267,7 @@ void MainWindow::on_actionSave_triggered()
 			qreal rot = rect->rotation();
 //			qDebug("bounding rect %d, %d, %d x %d, rotating %lf degrees",  br.x(), br.y(), br.width(), br.height(), rot);
 			QImage bounded = whole.copy(br);
-			QMatrix rotation;
+            QTransform rotation;
 			rotation.rotate(rot);
 			QImage rotated = bounded.transformed(rotation, Qt::SmoothTransformation);
 //			QString filename = QString("/tmp/rotated_%1.jpg").arg(subpart);
@@ -302,13 +302,13 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionZoom_100_triggered()
 {
-	ui->graphicsView->scale(1.0 / ui->graphicsView->matrix().m11(),
-							1.0 / ui->graphicsView->matrix().m11());
+    ui->graphicsView->scale(1.0 / ui->graphicsView->transform().m11(),
+                            1.0 / ui->graphicsView->transform().m11());
 }
 
 void MainWindow::on_actionSelect_All_triggered()
 {
-    foreach(QGraphicsItem* i, mainScene.items())
+    for (QGraphicsItem *i : mainScene.items())
 		if (i->type() == Rectangle::Type)
 			i->setSelected(true);
 }
@@ -331,7 +331,7 @@ void MainWindow::on_actionSave_template_triggered()
 	w.writeStartDocument();
 	w.writeStartElement("croppings");
 	w.writeTextElement("original", openedImage.fileName());
-    foreach(QGraphicsItem* i, mainScene.items())
+    for (QGraphicsItem *i : mainScene.items())
 		if (i->type() == Rectangle::Type)
 			((Rectangle*)i)->writeXML(w);
 	w.writeEndElement();
@@ -350,8 +350,8 @@ void MainWindow::on_actionOpen_template_triggered()
 
 void MainWindow::on_actionZoom_25_triggered()
 {
-	ui->graphicsView->scale(0.25 / ui->graphicsView->matrix().m11(),
-							0.25 / ui->graphicsView->matrix().m11());
+    ui->graphicsView->scale(0.25 / ui->graphicsView->transform().m11(),
+                            0.25 / ui->graphicsView->transform().m11());
 }
 
 
@@ -361,15 +361,15 @@ void MainWindow::on_actionZoom_to_Fit_triggered()
     qreal scalew = (ui->graphicsView->width() - 10) / mainScene.width();
 	if (scalew < scale)
 		scale = scalew;
-	ui->graphicsView->scale(scale / ui->graphicsView->matrix().m11(),
-							scale / ui->graphicsView->matrix().m11());
+    ui->graphicsView->scale(scale / ui->graphicsView->transform().m11(),
+                            scale / ui->graphicsView->transform().m11());
 }
 
 void MainWindow::on_actionZoom_Width_triggered()
 {
     qreal scale = (ui->graphicsView->width() - 10) / mainScene.width();
-	ui->graphicsView->scale(scale / ui->graphicsView->matrix().m11(),
-							scale / ui->graphicsView->matrix().m11());
+    ui->graphicsView->scale(scale / ui->graphicsView->transform().m11(),
+                            scale / ui->graphicsView->transform().m11());
 }
 
 void MainWindow::on_actionPrevious_triggered()

@@ -41,7 +41,7 @@ QVector<QRectF> MainImageScene::detectPhotoBoundaries()
     using namespace cv;
     using namespace std;
     Mat src, cannyEdges;
-    cvtColor(mat, src, CV_BGR2GRAY);
+    cvtColor(mat, src, COLOR_BGR2GRAY);
     Canny(src, cannyEdges, 50, 100, 3);
 
     std::vector<Vec4i> lines;

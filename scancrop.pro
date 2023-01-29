@@ -27,7 +27,7 @@ FORMS += mainwindow.ui
 
 !contains(QT_CONFIG, no-pkg-config) {
     CONFIG += link_pkgconfig
-    PKGCONFIG += opencv
+    PKGCONFIG += opencv4
 } else {
     LIBS += -lopencv_core -lopencv_imgproc -lopencv_objdetect
 }
