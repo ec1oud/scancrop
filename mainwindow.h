@@ -23,6 +23,9 @@ public:
 	bool openImage(QString path);
 	void openTemplate(QString path);
 
+protected:
+    bool event(QEvent *event) override;
+
 private slots:
 	void on_actionFind_images_triggered();
  void on_actionNext_triggered();
@@ -57,6 +60,7 @@ private:
 	QFileInfo openedTemplate;
 	QStringList args;
 	int argsIdx;
+    bool m_zoomFitPending = true;
 };
 
 #endif // MAINWINDOW_H

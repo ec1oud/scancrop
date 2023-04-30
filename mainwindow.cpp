@@ -138,8 +138,17 @@ void MainWindow::openTemplate(QString fpath)
 				break;
             default:
                 break;
-		}
-	}
+        }
+    }
+}
+
+bool MainWindow::event(QEvent *ev)
+{
+    if (ev->type() == QEvent::Show && m_zoomFitPending) {
+        on_actionZoom_to_Fit_triggered();
+        m_zoomFitPending = false;
+    }
+    return QMainWindow::event(ev);
 }
 
 void MainWindow::cursorMoved(QPointF pos)
