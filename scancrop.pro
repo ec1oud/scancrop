@@ -25,11 +25,7 @@ FORMS += mainwindow.ui
     LIBS += -L $$OPENCV_DIR/lib
 }
 
-!contains(QT_CONFIG, no-pkg-config) {
-    CONFIG += link_pkgconfig
-    PKGCONFIG += opencv4
-} else {
-    LIBS += -lopencv_core -lopencv_imgproc -lopencv_objdetect
-}
+INCLUDEPATH += /usr/include/opencv4
+LIBS += -lopencv_core -lopencv_imgproc -lopencv_objdetect
 
 RESOURCES += icons.qrc
