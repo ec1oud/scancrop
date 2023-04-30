@@ -34,14 +34,21 @@ QColor MainImageScene::colorAt(int x, int y)
 
 QVector<QRectF> MainImageScene::detectPhotoBoundaries()
 {
-    QVector<QRectF> ret;
-    QImage rgb = mainImage.convertToFormat(QImage::Format_RGB32).rgbSwapped();
-    cv::Mat mat(rgb.height(), rgb.width(), CV_8UC4, rgb.bits(), size_t(rgb.bytesPerLine()));
-
     using namespace cv;
+    QVector<QRectF> ret;
+
+    QImage rgb = mainImage.convertToFormat(QImage::Format_RGB32).rgbSwapped();
+    Mat src(rgb.height(), rgb.width(), CV_8UC4, rgb.bits(), size_t(rgb.bytesPerLine()));
+    Mat pre(rgb.height(), rgb.width(), CV_8UC4, rgb.bits(), size_t(rgb.bytesPerLine()));
+    Mat element = getStructuringElement(MORPH_RECT, Size(150, 150));
+    morphologyEx(src, pre, MORPH_CLOSE, element, Point(-1,-1), 3);
+
+    qDebug() << pre.cols << pre.rows << pre.step;
+    image(QImage((const uchar*)(pre.data), pre.cols, pre.rows, pre.step, QImage::Format_RGB32).rgbSwapped());
+
     using namespace std;
-    Mat src, cannyEdges;
-    cvtColor(mat, src, COLOR_BGR2GRAY);
+    Mat cannyEdges;
+    cvtColor(pre, src, COLOR_BGR2GRAY);
     Canny(src, cannyEdges, 50, 100, 3);
 
     std::vector<Vec4i> lines;
