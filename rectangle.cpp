@@ -14,8 +14,45 @@ Rectangle::Rectangle(qreal x, qreal y, qreal w, qreal h, QGraphicsItem * parent)
 {
 	QPolygonF poly(QRectF(x, y, w, h));
 	setPolygon(poly);
-	setFlags(/*QGraphicsItem::ItemIsMovable |*/ QGraphicsItem::ItemIsSelectable);
-	setZValue(1.0);
+    setFlags(/*QGraphicsItem::ItemIsMovable |*/ QGraphicsItem::ItemIsSelectable);
+    setZValue(1.0);
+}
+
+Rectangle::Rectangle(const cv::RotatedRect &rr, QGraphicsItem *parent) :
+    QGraphicsPolygonItem(parent)
+{
+    cv::Point2f pts[4];
+    rr.points(pts);
+    // rr.points():
+    // bottomLeft, topLeft, topRight, bottomRight
+    // QPolygonF wants:
+    // the four vertices of the rectangle in clockwise order starting and ending with the top-left vertex.
+    QPolygonF poly;
+    poly << QPointF(pts[1].x, pts[1].y);
+    poly << QPointF(pts[2].x, pts[2].y);
+    poly << QPointF(pts[3].x, pts[3].y);
+    poly << QPointF(pts[0].x, pts[0].y);
+    poly << QPointF(pts[1].x, pts[1].y);
+    setPolygon(poly);
+    setFlags(QGraphicsItem::ItemIsSelectable);
+    setZValue(1.0);
+}
+
+Rectangle::Rectangle(const std::vector<cv::Point> &pts, QGraphicsItem *parent) :
+    QGraphicsPolygonItem(parent)
+{
+    // topLeft, bottomLeft, bottomRight, topRight
+    // QPolygonF wants:
+    // the four vertices of the rectangle in clockwise order starting and ending with the top-left vertex.
+    QPolygonF poly;
+    poly << QPointF(pts[0].x, pts[0].y);
+    poly << QPointF(pts[3].x, pts[3].y);
+    poly << QPointF(pts[2].x, pts[2].y);
+    poly << QPointF(pts[1].x, pts[1].y);
+    poly << QPointF(pts[0].x, pts[0].y);
+    setPolygon(poly);
+    setFlags(QGraphicsItem::ItemIsSelectable);
+    setZValue(1.0);
 }
 
 Rectangle::Rectangle(QXmlStreamReader& r)
@@ -148,18 +185,22 @@ void Rectangle::startResize()
 	aspect = width / height;
 }
 
-double Rectangle::actualWidth()
+double Rectangle::actualWidth() const
 {
-	QPolygonF poly = polygon();
-	width = QLineF(poly[2], poly[3]).length();
+    if (qFuzzyIsNull(width)) {
+        QPolygonF poly = polygon();
+        width = QLineF(poly[2], poly[3]).length();
+    }
 	return width;
 }
 
-double Rectangle::actualHeight()
+double Rectangle::actualHeight() const
 {
-	QPolygonF poly = polygon();
-	height = QLineF(poly[0], poly[3]).length();
-	return height;
+    if (qFuzzyIsNull(height)) {
+        QPolygonF poly = polygon();
+        height = QLineF(poly[0], poly[3]).length();
+    }
+    return height;
 }
 
 void Rectangle::resize(ResizeHandleIdx hidx, QPointF pos)
@@ -355,4 +396,11 @@ void Rectangle::writeXML(QXmlStreamWriter& w)
 	w.writeTextElement("y3", QString::number(poly[3].y()));
 	w.writeTextElement("angle", QString::number(rotation()));
 	w.writeEndElement();
+}
+
+QDebug operator<<(QDebug debug, const Rectangle &r)
+{
+    const QPolygonF poly = r.polygon();
+    debug << "Rectangle" << poly << ":" << r.actualWidth() << "x" << r.actualHeight() << "rot" << r.rotation();
+    return debug;
 }

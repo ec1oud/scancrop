@@ -5,10 +5,14 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 
+#include <opencv2/core/types.hpp>
+
 class Rectangle : public QGraphicsPolygonItem
 {
 public:
-	Rectangle(qreal x, qreal y, qreal width, qreal height, QGraphicsItem * parent = 0);
+    Rectangle(qreal x, qreal y, qreal width, qreal height, QGraphicsItem * parent = 0);
+    Rectangle(const cv::RotatedRect &rr, QGraphicsItem * parent = 0);
+    Rectangle(const std::vector<cv::Point> &pts, QGraphicsItem * parent = 0);
 	Rectangle(QXmlStreamReader& r);
 
 	enum { Type = UserType + 1 };
@@ -31,8 +35,8 @@ public:
 
 	int handleWidth();
 
-	double actualWidth();
-	double actualHeight();
+    double actualWidth() const;
+    double actualHeight() const;
 
 	QRectF boundingRect () const;
 
@@ -48,14 +52,18 @@ public:
 	void writeXML(QXmlStreamWriter& w);
 
 protected:
-	double width;
-	double height;
-	double aspect;
-	double sineA;
-	double cosineA;
-	double sineB;
-	double cosineB;
-	static QPixmap* resizeHandle;
+    mutable double width = 0;
+    mutable double height = 0;
+    double aspect = 0;
+    double sineA = 0;
+    double cosineA = 1;
+    double sineB = 0;
+    double cosineB = 1;
+    static QPixmap* resizeHandle;
+
+    friend QDebug operator<<(QDebug debug, const Rectangle &option);
 };
+
+QDebug operator<<(QDebug debug, const Rectangle &option);
 
 #endif // RECTANGLE_H

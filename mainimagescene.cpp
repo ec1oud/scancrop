@@ -113,12 +113,6 @@ QVector<QRectF> MainImageScene::detectPhotoBoundaries()
                     // if cosines of all angles are small (all angles are ~90°)
                     // then write quandrange vertices to resultant sequence
                     if (maxCosine < 0.3) {
-                        qDebug() << "found"
-                                 << approx[0].x << approx[0].y
-                                 << approx[1].x << approx[1].y
-                                 << approx[2].x << approx[2].y
-                                 << approx[3].x << approx[3].y;
-
                         QVector<QPointF> bpts;
                         for (Point p : approx)
                             bpts << QPointF(p.x, p.y);
@@ -127,15 +121,17 @@ QVector<QRectF> MainImageScene::detectPhotoBoundaries()
                         pgn->setPen(QPen(Qt::green));
                         addItem(pgn);
 
-                        RotatedRect rect = minAreaRect(approx);
-                        QRectF r(0, 0, rect.size.width, rect.size.height);
-                        r.moveCenter(QPointF(rect.center.x, rect.center.y));
-                        ret << r;
-
-                        Rectangle *box = new Rectangle(r.x(), r.y(), r.width(), r.height());
+                        Rectangle *box = new Rectangle(approx);
+                        qDebug() << approx[0].x << approx[0].y
+                                 << approx[1].x << approx[1].y
+                                 << approx[2].x << approx[2].y
+                                 << approx[3].x << approx[3].y
+                                 << "->" << *box;
                         box->setPen(QPen(Qt::magenta));
                         addItem(box);
                         box->setZValue(1.0);
+
+                        ret << box->boundingRect();
                     }
                 }
             }
