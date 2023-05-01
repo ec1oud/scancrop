@@ -7,6 +7,9 @@
 #define MOUSE_CLICK_MAX_MOVEMENT 3
 #define MIN_CONTOUR_AREA 250
 
+static const int CANNY_THRESHOLD = 50;
+static const int SQUARES_THRESHOLD_COUNT = 11;
+
 MainImageScene::MainImageScene() :
 	QGraphicsScene(),
 	boxTool(new BoxTool(this)),
@@ -32,6 +35,18 @@ QColor MainImageScene::colorAt(int x, int y)
     return mainImage.pixel(x, y);
 }
 
+// helper function:
+// finds a cosine of angle between vectors
+// from pt0->pt1 and from pt0->pt2
+static double cos3pts(cv::Point pt1, cv::Point pt2, cv::Point pt0)
+{
+    double dx1 = pt1.x - pt0.x;
+    double dy1 = pt1.y - pt0.y;
+    double dx2 = pt2.x - pt0.x;
+    double dy2 = pt2.y - pt0.y;
+    return (dx1*dx2 + dy1*dy2)/sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
+}
+
 QVector<QRectF> MainImageScene::detectPhotoBoundaries()
 {
     using namespace cv;
@@ -39,50 +54,93 @@ QVector<QRectF> MainImageScene::detectPhotoBoundaries()
 
     QImage rgb = mainImage.convertToFormat(QImage::Format_RGB32).rgbSwapped();
     Mat src(rgb.height(), rgb.width(), CV_8UC4, rgb.bits(), size_t(rgb.bytesPerLine()));
-    Mat pre(rgb.height(), rgb.width(), CV_8UC4, rgb.bits(), size_t(rgb.bytesPerLine()));
-    Mat element = getStructuringElement(MORPH_RECT, Size(150, 150));
-    morphologyEx(src, pre, MORPH_CLOSE, element, Point(-1,-1), 3);
 
-    qDebug() << pre.cols << pre.rows << pre.step;
-    image(QImage((const uchar*)(pre.data), pre.cols, pre.rows, pre.step, QImage::Format_RGB32).rgbSwapped());
+    Mat pyr, timg, gray0(src.size(), CV_8U), gray;
 
-    using namespace std;
-    Mat cannyEdges;
-    cvtColor(pre, src, COLOR_BGR2GRAY);
-    Canny(src, cannyEdges, 50, 100, 3);
+    // down-scale and upscale the src to filter out the noise
+    pyrDown(src, pyr, Size(src.cols/2, src.rows/2));
+    pyrUp(pyr, timg, src.size());
+    std::vector<std::vector<Point> > contours;
 
-    std::vector<Vec4i> lines;
-    HoughLinesP(cannyEdges, lines, 1, CV_PI/180, 32, 32, 10 );
-    vector<Point> pointset;
-    for( size_t i = 0; i < lines.size(); i++ ) {
-        QGraphicsLineItem *l = new QGraphicsLineItem(lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
-        l->setPen(QPen(Qt::red));
-        addItem(l);
-        pointset.push_back(Point(lines[i][0], lines[i][1]));
-        pointset.push_back(Point(lines[i][2], lines[i][3]));
+    // find squares in every color plane of the src
+    for (int c = 0; c < 3; c++) {
+        int ch[] = {c, 0};
+        mixChannels(&timg, 1, &gray0, 1, ch, 1);
+
+        // try several threshold levels
+        for (int l = 0; l < SQUARES_THRESHOLD_COUNT; l++)
+        {
+            // hack: use Canny instead of zero threshold level.
+            // Canny helps to catch squares with gradient shading
+            if (l == 0) {
+                // apply Canny. Take the upper threshold from slider
+                // and set the lower to 0 (which forces edges merging)
+                Canny(gray0, gray, 0, CANNY_THRESHOLD, 5);
+                // dilate canny output to remove potential
+                // holes between edge segments
+                dilate(gray, gray, Mat(), Point(-1,-1));
+            } else {
+                // apply threshold if l!=0:
+                //     tgray(x,y) = gray(x,y) < (l+1)*255/N ? 255 : 0
+                gray = gray0 >= (l + 1) * 255 / SQUARES_THRESHOLD_COUNT;
+            }
+
+            // find contours and store them all as a list
+            findContours(gray, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
+
+            std::vector<Point> approx;
+            // test each contour
+            for (size_t i = 0; i < contours.size(); i++) {
+                // approximate contour with accuracy proportional to the contour perimeter
+                approxPolyDP(contours[i], approx, arcLength(contours[i], true)*0.02, true);
+
+                // square contours should have 4 vertices after approximation,
+                // relatively large area (to filter out noisy contours), and be convex.
+                // Note: absolute value of an area is used because area may be
+                // positive or negative - in accordance with the contour orientation
+                if( approx.size() == 4 &&
+                    fabs(contourArea(approx)) > 1000 &&
+                    isContourConvex(approx) )
+                {
+                    double maxCosine = 0;
+
+                    for (int j = 2; j < 5; j++) {
+                        // find the maximum cosine of the angle between joint edges
+                        double cosine = fabs(cos3pts(approx[j%4], approx[j-2], approx[j-1]));
+                        maxCosine = MAX(maxCosine, cosine);
+                    }
+
+                    // if cosines of all angles are small (all angles are ~90°)
+                    // then write quandrange vertices to resultant sequence
+                    if (maxCosine < 0.3) {
+                        qDebug() << "found"
+                                 << approx[0].x << approx[0].y
+                                 << approx[1].x << approx[1].y
+                                 << approx[2].x << approx[2].y
+                                 << approx[3].x << approx[3].y;
+
+                        QVector<QPointF> bpts;
+                        for (Point p : approx)
+                            bpts << QPointF(p.x, p.y);
+
+                        QGraphicsPolygonItem *pgn = new QGraphicsPolygonItem(QPolygonF(bpts));
+                        pgn->setPen(QPen(Qt::green));
+                        addItem(pgn);
+
+                        RotatedRect rect = minAreaRect(approx);
+                        QRectF r(0, 0, rect.size.width, rect.size.height);
+                        r.moveCenter(QPointF(rect.center.x, rect.center.y));
+                        ret << r;
+
+                        Rectangle *box = new Rectangle(r.x(), r.y(), r.width(), r.height());
+                        box->setPen(QPen(Qt::magenta));
+                        addItem(box);
+                        box->setZValue(1.0);
+                    }
+                }
+            }
+        }
     }
-
-    vector<Point> convex_hull;
-    convexHull(pointset, convex_hull);
-    qDebug() << "convex hull has" << convex_hull.size();
-
-    QVector<QPointF> bpts;
-    for (Point p : convex_hull)
-        bpts << QPointF(p.x, p.y);
-
-    QGraphicsPolygonItem *pgn = new QGraphicsPolygonItem(QPolygonF(bpts));
-    pgn->setPen(QPen(Qt::green));
-    addItem(pgn);
-
-    RotatedRect rect = minAreaRect(convex_hull);
-    QRectF r(0, 0, rect.size.width, rect.size.height);
-    r.moveCenter(QPointF(rect.center.x, rect.center.y));
-    ret << r;
-
-    Rectangle *box = new Rectangle(r.x(), r.y(), r.width(), r.height());
-    box->setPen(QPen(Qt::magenta));
-    addItem(box);
-    box->setZValue(1.0);
 
     return ret;
 }
