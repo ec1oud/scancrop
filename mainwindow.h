@@ -5,6 +5,7 @@
 #define MAINWINDOW_H
 
 #include "mainimagescene.h"
+#include "preferencesdialog.h"
 
 #include <QMainWindow>
 #include <QLineEdit>
@@ -56,6 +57,8 @@ private slots:
 
     void on_actionToggle_image_visible_triggered();
 
+    void on_actionSettings_triggered();
+
 private:
 	Ui::MainWindow *ui;
     MainImageScene mainScene;
@@ -64,6 +67,7 @@ private:
 	QStringList args;
 	int argsIdx;
     bool m_zoomFitPending = true;
+    PreferencesDialog m_prefsDialog;
 };
 
 #endif // MAINWINDOW_H

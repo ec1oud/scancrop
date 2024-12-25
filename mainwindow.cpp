@@ -431,3 +431,9 @@ void MainWindow::on_actionToggle_image_visible_triggered()
     auto &image = mainScene.imageView();
     image.setVisible(!image.isVisible());
 }
+
+void MainWindow::on_actionSettings_triggered()
+{
+    m_prefsDialog.show();
+}
+
