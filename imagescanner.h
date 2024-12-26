@@ -42,7 +42,7 @@ signals:
 	void done(QImage img);
 
 protected:
-	void run();
+    void run() override;
 
 private:
 	ImageScanner();

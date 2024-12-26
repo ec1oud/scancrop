@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/" >
+    <qresource prefix="/">
         <file>images/default-page.png</file>
         <file>images/tool-pan.png</file>
         <file>images/book_next.png</file>
@@ -20,5 +20,6 @@
         <file>images/save_template.png</file>
         <file>images/open_template.png</file>
         <file>images/zoom25.png</file>
+        <file>images/scanner.png</file>
     </qresource>
 </RCC>

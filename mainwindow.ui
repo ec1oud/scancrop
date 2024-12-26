@@ -34,6 +34,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionScan"/>
     <addaction name="actionSave"/>
     <addaction name="actionOpen_template"/>
     <addaction name="separator"/>
@@ -87,6 +88,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionOpen"/>
+   <addaction name="actionScan"/>
    <addaction name="actionSave"/>
    <addaction name="actionOpen_template"/>
    <addaction name="separator"/>
@@ -414,6 +416,18 @@
   <action name="actionSettings">
    <property name="text">
     <string>Settings...</string>
+   </property>
+  </action>
+  <action name="actionScan">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/images/scanner.png</normaloff>:/images/scanner.png</iconset>
+   </property>
+   <property name="text">
+    <string>Scan...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+K</string>
    </property>
   </action>
  </widget>

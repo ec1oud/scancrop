@@ -13,8 +13,7 @@
 see also notes.md
 
 - [ ] user can select a "white" pixel; then use flood fill to find the rest of such
-  areas, then use "curve fitting" technique to fit rectangles 
-- [ ] incorporate scanning directly (SANE API)
+  areas, then use "curve fitting" technique to fit rectangles
 - [ ] recognize a distinctive pattern on the scanner lid (stipple?) where photos
   are not, for boundary detection
 - [ ] try YOLO
@@ -38,16 +37,17 @@ see also notes.md
 
 - [x] next/previous navigation through a set of images (given on command line, or
   with a mask in cwd) and load relevant templates if that feature is selected
-  in preferences 
+  in preferences
 - [x] loading template loads the "original" image too, if not already loaded
-  (preference?) 
-- [x] some actual image processing! 
-- [x] command arg for image to load 
-- [x] save crop positions to text or XML file 
-- [x] zoom 
-- [x] rotate selection 90 degrees 
-- [x] delete rect 
-- [x] pan 
-- [x] drag to move 
-- [x] make handles bigger 
-- [x] zoom to fit entire image, width or selection 
+  (preference?)
+- [x] some actual image processing!
+- [x] command arg for image to load
+- [x] save crop positions to text or XML file
+- [x] zoom
+- [x] rotate selection 90 degrees
+- [x] delete rect
+- [x] pan
+- [x] drag to move
+- [x] make handles bigger
+- [x] zoom to fit entire image, width or selection
+- [x] incorporate scanning directly (SANE API)

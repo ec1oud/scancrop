@@ -17,21 +17,21 @@ Settings* Settings::instance()
 Settings::Settings(QObject* parent) :
 	QSettings(STR_ORGANIZATION, STR_PRODUCT, parent)
 {
-	qDebug() << "settings stored at" << fileName();
+    qDebug() << "settings stored at" << fileName();
     m_allMediaTypes << SIZE_SNAPSHOT << SIZE_MEDIUM << SIZE_LARGE;
-	beginGroup(SETTING_GROUP_SCAN_GEOMETRY);
+    beginGroup(SETTING_GROUP_SCAN_GEOMETRY);
     QRectF r = parseGeometryString(value(SIZE_SNAPSHOT).toString());
-	if (r.isNull())
+    if (r.isNull())
         setValue(SIZE_SNAPSHOT, QVariant(toString(QRectF(0, 0, 105, 160))));
     r = parseGeometryString(value(SIZE_MEDIUM).toString());
-	if (r.isNull())
+    if (r.isNull())
         setValue(SIZE_MEDIUM, QVariant(toString(QRectF(0, 0, 130, 180))));
     r = parseGeometryString(value(SIZE_LARGE).toString());
     if (r.isNull())
         setValue(SIZE_LARGE, QVariant(toString(QRectF(0, 0, 220, 280))));
-	endGroup();
-	if (intOrDefault("main", "resolution", -1) < 0)
-		setInt("main", "resolution", 300);
+    endGroup();
+    if (intOrDefault("main", "resolution", -1) < 0)
+        setInt("main", "resolution", 300);
 }
 
 Settings::~Settings()
@@ -69,21 +69,6 @@ void Settings::setScanGeometry(QString mediaType, QRectF geom)
 {
 	beginGroup(SETTING_GROUP_SCAN_GEOMETRY);
 	setValue(mediaType, QVariant(toString(geom)));
-	endGroup();
-}
-
-QSize Settings::matrixDims(QString mediaType)
-{
-	beginGroup(SETTING_GROUP_SCAN_MATRIX);
-	QSize ret = parseSizeString(value(mediaType).toString());
-	endGroup();
-	return ret;
-}
-
-void Settings::setMatrixDims(QString mediaType, QSize dims)
-{
-	beginGroup(SETTING_GROUP_SCAN_MATRIX);
-	setValue(mediaType, QVariant(QString("%1,%2").arg(dims.width()).arg(dims.height())));
 	endGroup();
 }
 

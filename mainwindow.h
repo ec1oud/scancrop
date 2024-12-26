@@ -56,8 +56,8 @@ private slots:
 	void on_actionOpen_triggered();
 
     void on_actionToggle_image_visible_triggered();
-
     void on_actionSettings_triggered();
+    void on_actionScan_triggered();
 
 private:
 	Ui::MainWindow *ui;
@@ -68,6 +68,7 @@ private:
 	int argsIdx;
     bool m_zoomFitPending = true;
     PreferencesDialog m_prefsDialog;
+    QMetaObject::Connection m_scannerConnection;
 };
 
 #endif // MAINWINDOW_H

@@ -28,8 +28,6 @@ public:
 		QSize is used just because it's a convenient pre-existing class with 2 ints,
 		but the units are floppies (or other media) rather than pixels.
 	*/
-	QSize matrixDims(QString mediaType);
-	void setMatrixDims(QString mediaType, QSize dims);
 	QStringList allMediaTypes() { return m_allMediaTypes; }
 	QString chosenScanner() { return stringOrDefault("main", "scanner"); }
 	void chosenScanner(QString v) { setString("main", "scanner", v); }

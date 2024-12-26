@@ -3,6 +3,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "imagescanner.h"
 #include <QFileDialog>
 #include <QDebug>
 #include <QProcess>
@@ -437,3 +438,13 @@ void MainWindow::on_actionSettings_triggered()
     m_prefsDialog.show();
 }
 
+
+void MainWindow::on_actionScan_triggered()
+{
+    if (!m_scannerConnection)
+        m_scannerConnection = connect(ImageScanner::instance(), SIGNAL(done(QImage)),
+                                      &mainScene, SLOT(image(QImage)));
+    // m_scannerConnection = connect(ImageScanner::instance(), &ImageScanner::done,
+    //                               &mainScene, &MainImageScene::image);
+    ImageScanner::instance()->scan("snapshot (4 x 6 and smaller)"); // TODO use a dialog instead of presets
+}

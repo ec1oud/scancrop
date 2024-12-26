@@ -15,7 +15,6 @@
 #define SETTING_GROUP_RECENT_FILES "recent-files"
 #define SETTING_RECENT_FILES_LIMIT "recentFilesLimit"
 #define SETTING_GROUP_SCAN_GEOMETRY "scan-geometry"
-#define SETTING_GROUP_SCAN_MATRIX "scan-matrix"
 
 #ifndef MIN
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
