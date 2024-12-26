@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QHash>
+#include <QImageReader>
 #include <QImageWriter>
 #include <QLibraryInfo>
 #include <QProcess>
@@ -161,8 +162,8 @@ void MainWindow::selectionChanged()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    QString fpath =
-        QFileDialog::getOpenFileName(this, tr("Open Image"), "", tr("Images (*.png *.xpm *.jpg *.pnm *.tif *.tiff *.jpeg)"));
+    const QString exts = tr("Images (*.") + QImageReader::supportedImageFormats().join(" *.") + ")";
+    QString fpath = QFileDialog::getOpenFileName(this, tr("Open Image"), "", exts);
     if (fpath.isEmpty())
         return;
     open(fpath);
