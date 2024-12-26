@@ -176,6 +176,12 @@ void MainImageScene::keyPressEvent(QKeyEvent *ev)
 
 QImage MainImageScene::image() { return mainImageView.pixmap().toImage(); }
 
+cv::Mat MainImageScene::cvImage(int type)
+{
+    QImage rgb = mainImage.convertToFormat(QImage::Format_RGB32).rgbSwapped();
+    return cv::Mat(rgb.height(), rgb.width(), type, rgb.bits(), size_t(rgb.bytesPerLine()));
+}
+
 bool MainImageScene::openImage(QString path)
 {
     QPixmap pm(path);

@@ -12,6 +12,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QImage>
 #include <QKeyEvent>
+#include <opencv2/core/mat.hpp>
 
 class MainImageScene : public QGraphicsScene
 {
@@ -32,6 +33,7 @@ public slots:
     void image(QImage pm);
     void image(int /* pnum */, QImage pm) { image(pm); }
     QImage image();
+    cv::Mat cvImage(int type);
     void setTool(Tool *t) { tool = t; }
     bool openImage(QString path);
 
