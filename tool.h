@@ -4,22 +4,22 @@
 #ifndef TOOL_H
 #define TOOL_H
 
-#include <QObject>
 #include <QGraphicsSceneMouseEvent>
+#include <QObject>
 class MainImageScene;
 
 class Tool : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	Tool(MainImageScene* scn);
-	virtual void mouseMoveEvent ( QGraphicsSceneMouseEvent * ev) = 0;
-	virtual void mousePressEvent ( QGraphicsSceneMouseEvent * ev) = 0;
-	virtual void mouseReleaseEvent ( QGraphicsSceneMouseEvent * ev) = 0;
-	virtual void mouseLeftClickEvent ( QGraphicsSceneMouseEvent * ev) = 0;
+    Tool(MainImageScene *scn);
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *ev) = 0;
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *ev) = 0;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *ev) = 0;
+    virtual void mouseLeftClickEvent(QGraphicsSceneMouseEvent *ev) = 0;
 
 protected:
-	MainImageScene* scene;
+    MainImageScene *scene;
 };
 
 #endif // TOOL_H

@@ -6,11 +6,13 @@
 
 #include <QDialog>
 
-namespace Ui {
-    class PreferencesDialog;
+namespace Ui
+{
+class PreferencesDialog;
 }
 
-class PreferencesDialog : public QDialog {
+class PreferencesDialog : public QDialog
+{
     Q_OBJECT
 public:
     PreferencesDialog(QWidget *parent = 0);
@@ -18,7 +20,7 @@ public:
 
 protected:
     void changeEvent(QEvent *e);
-	void showEvent(QShowEvent* event);
+    void showEvent(QShowEvent *event);
 
 private:
     Ui::PreferencesDialog *m_ui;

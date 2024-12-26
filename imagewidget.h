@@ -8,24 +8,24 @@
 
 class ImageWidget : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-    ImageWidget(QWidget* parent = NULL);
+    ImageWidget(QWidget *parent = NULL);
 
 public slots:
-	void image(QImage pm);
-	void image(int pnum, QImage pm) { image(pm); }
-	void lookBusy(bool b);
+    void image(QImage pm);
+    void image(int pnum, QImage pm) { image(pm); }
+    void lookBusy(bool b);
 
 signals:
-	void dimensions(QSize s);
+    void dimensions(QSize s);
 
 protected:
-	void paintEvent ( QPaintEvent * event ) ;
-	void resizeEvent ( QResizeEvent * event );
+    void paintEvent(QPaintEvent *event);
+    void resizeEvent(QResizeEvent *event);
 
 protected:
-	QImage m_image;
+    QImage m_image;
 };
 
 #endif // IMAGEWIDGET_H
