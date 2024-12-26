@@ -27,7 +27,7 @@ public:
 
     void startResize();
 
-    void resize(ResizeHandleIdx hidx, QPointF pos);
+    void resize(ResizeHandleIdx hidx, QPointF pos, bool constrained = true);
 
     void rotate(bool clockwise);
 
@@ -58,6 +58,7 @@ protected:
     double sineB = 0;
     double cosineB = 1;
     static QPixmap *resizeHandle;
+    // bool m_constrained = true; // if false, it can be a trapezoid
 
     friend QDebug operator<<(QDebug debug, const Rectangle &option);
 };

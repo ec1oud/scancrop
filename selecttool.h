@@ -17,6 +17,7 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *ev);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *ev);
     void mouseLeftClickEvent(QGraphicsSceneMouseEvent *ev);
+    void setConstrainedResize(bool c) { m_constrainedResize = c; }
 
 signals:
     void selectionChanged();
@@ -26,6 +27,7 @@ private:
     Rectangle *resizing;
     Rectangle *dragging;
     Rectangle::ResizeHandleIdx resizingHandle;
+    bool m_constrainedResize = true;
 };
 
 #endif // SelectTOOL_H

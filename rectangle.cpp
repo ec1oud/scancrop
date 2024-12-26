@@ -195,7 +195,7 @@ double Rectangle::actualHeight() const
     return height;
 }
 
-void Rectangle::resize(ResizeHandleIdx hidx, QPointF pos)
+void Rectangle::resize(ResizeHandleIdx hidx, QPointF pos, bool constrained)
 {
     QPolygonF poly = polygon();
 //	QRectF bounds = QGraphicsPolygonItem::boundingRect();
@@ -212,25 +212,31 @@ void Rectangle::resize(ResizeHandleIdx hidx, QPointF pos)
             // Implementation: use y coordinate from mouse, and set the X coord
 //			qDebug("x = %lf - %lf * (
 //			pos.setX(poly[3].x() + sine * (poly[2].x() - poly[1].x()));
-            pos.setX(poly[3].x() - sineA * (poly[3].y() - pos.y()));
+            if (constrained)
+                pos.setX(poly[3].x() - sineA * (poly[3].y() - pos.y()));
             poly[0] = pos;
             poly[4] = pos;
-            poly[1] = QPointF(pos.x() + poly[2].x() - poly[3].x(), pos.y() + poly[2].y() - poly[3].y());
+            if (constrained)
+                poly[1] = QPointF(pos.x() + poly[2].x() - poly[3].x(), pos.y() + poly[2].y() - poly[3].y());
         } break;
         case RH_TOP_RIGHT: {
             // Constrain to a constant angle.
             // sine and cosine were set in startResize() and now we hold them
             // constant while allowing height to vary.
             // Implementation: use y coordinate from mouse, and set the X coord
-            pos.setX(poly[2].x() - sineA * (poly[2].y() - pos.y()));
+            if (constrained)
+                pos.setX(poly[2].x() - sineA * (poly[2].y() - pos.y()));
             poly[1] = pos;
-            poly[0] = poly[4] = QPointF(pos.x() - poly[2].x() + poly[3].x(), pos.y() - poly[2].y() + poly[3].y());
+            if (constrained)
+                poly[0] = poly[4] = QPointF(pos.x() - poly[2].x() + poly[3].x(), pos.y() - poly[2].y() + poly[3].y());
         } break;
         case RH_BOTTOM_RIGHT: {
             // Constrain to prevent rotation beyond +/- 90 degrees
-            if (pos.x() < poly[3].x())
+            if (constrained && pos.x() < poly[3].x())
                 pos.setX(poly[3].x());
             poly[2] = pos;
+            if (!constrained)
+                break;
             // Treat the bottom left as the fulcrum.
             actualWidth();
             height = width / aspect;
@@ -247,9 +253,11 @@ void Rectangle::resize(ResizeHandleIdx hidx, QPointF pos)
         } break;
         case RH_BOTTOM_LEFT: {
             // Constrain to prevent rotation beyond +/- 90 degrees
-            if (pos.x() > poly[2].x())
+            if (constrained && pos.x() > poly[2].x())
                 pos.setX(poly[2].x());
             poly[3] = pos;
+            if (!constrained)
+                break;
             // Treat the bottom right as the fulcrum.
             actualWidth();
             height = width / aspect;
@@ -266,9 +274,8 @@ void Rectangle::resize(ResizeHandleIdx hidx, QPointF pos)
             poly[0].ry() = poly[4].ry() = poly[3].y() - cosine * height;
             poly[1].rx() = poly[2].x() - sine * height;
             poly[1].ry() = poly[2].y() - cosine * height;
-        }
-            poly[3] = pos;
             break;
+        }
         default:
             break;
     }

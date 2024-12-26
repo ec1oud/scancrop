@@ -36,6 +36,7 @@ MainWindow::MainWindow(QStringList mainArgs, QWidget *parent)
     connect(mainScene.selectTool, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
     connect(&mainScene, &MainImageScene::imageOpened, this, &MainWindow::imageOpened);
     ui->actionSelect->setChecked(true);
+    ui->actionKeep_rectangular->setChecked(true);
     if (args.count() > 0)
         open(args.first());
     updateNextPrevious();
@@ -262,31 +263,57 @@ void MainWindow::on_actionSave_triggered()
     for (QGraphicsItem *i : mainScene.items())
         if (i->type() == Rectangle::Type) {
             Rectangle *rect = (Rectangle *)i;
+            QPolygonF poly = rect->polygon();
+            QImage cropped;
             QRect br = rect->mapRectToScene(rect->boundingRect()).toRect();
             qreal rot = rect->rotation();
-//			qDebug("bounding rect %d, %d, %d x %d, rotating %lf degrees",  br.x(), br.y(), br.width(), br.height(), rot);
+            qDebug("bounding rect %d, %d, %d x %d, rotating %lf degrees",  br.x(), br.y(), br.width(), br.height(), rot);
             QImage bounded = whole.copy(br);
-            QTransform rotation;
-            rotation.rotate(rot);
-            QImage rotated = bounded.transformed(rotation, Qt::SmoothTransformation);
-//			QString filename = QString("/tmp/rotated_%1.jpg").arg(subpart);
-//			rotated.save(filename);
-            qDebug("rotating %lf degrees, cropping to %lf x %lf", rot, rect->actualWidth(), rect->actualHeight());
-            QImage cropped = rotated.copy((rotated.width() - rect->actualWidth()) / 2,
-                                          (rotated.height() - rect->actualHeight()) / 2, rect->actualWidth(), rect->actualHeight());
-            QPolygonF poly = rect->polygon();
-            cropped.setText("description", QString("cropped area %1, %2; %3, %4; %5, %6; %7, %8 (rotation %9 degrees) from %10")
-                                               .arg(poly[0].x())
-                                               .arg(poly[0].y())
-                                               .arg(poly[1].x())
-                                               .arg(poly[1].y())
-                                               .arg(poly[2].x())
-                                               .arg(poly[2].y())
-                                               .arg(poly[3].x())
-                                               .arg(poly[3].y())
-                                               .arg(rot)
-                                               .arg(openedImage.fileName()));
-            qDebug() << cropped.text();
+            if (ui->actionKeep_rectangular->isChecked()) {
+                QTransform rotation;
+                rotation.rotate(rot);
+                QImage rotated = bounded.transformed(rotation, Qt::SmoothTransformation);
+//              QString filename = QString("/tmp/rotated_%1.jpg").arg(subpart);
+//              rotated.save(filename);
+                qDebug("rotating %lf degrees, cropping to %lf x %lf", rot, rect->actualWidth(), rect->actualHeight());
+                cropped = rotated.copy((rotated.width() - rect->actualWidth()) / 2,
+                                       (rotated.height() - rect->actualHeight()) / 2, rect->actualWidth(), rect->actualHeight());
+                cropped.setText("description", QString("cropped area %1, %2; %3, %4; %5, %6; %7, %8 (rotation %9 degrees) from %10")
+                                                   .arg(poly[0].x())
+                                                   .arg(poly[0].y())
+                                                   .arg(poly[1].x())
+                                                   .arg(poly[1].y())
+                                                   .arg(poly[2].x())
+                                                   .arg(poly[2].y())
+                                                   .arg(poly[3].x())
+                                                   .arg(poly[3].y())
+                                                   .arg(rot)
+                                                   .arg(openedImage.fileName()));
+                qDebug() << cropped.text();
+            } else {
+                auto brect = poly.boundingRect();
+                qreal maxdim = qMax(brect.width(), brect.height());
+                // make it square (good for instamatic, or for remapping to some other aspect ratio afterwards)
+                brect.setHeight(maxdim);
+                brect.setWidth(maxdim);
+                // alternative idea:
+                // auto topLen = QLineF(poly.first(), poly.at(1)).length();
+                // auto bottomLen = QLineF(poly.at(2), poly.at(3)).length();
+                // assume that the bottom/top ratio is the same as the
+                // foreshortening that projected the rectangle (or square) to a trapezoid
+
+                // depends on the fix for https://bugreports.qt.io/browse/QTBUG-21329
+                QTransform transform;
+                bool ok = QTransform::quadToQuad(poly, brect, transform);
+                if (ok) {
+                    QTransform trueMatrix = QImage::trueMatrix(transform, whole.width(), whole.height());
+                    brect.moveTopLeft(trueMatrix.map(poly.first()));
+                    qDebug() << "mapping" << poly << "to" << brect << "ok?" << ok << ":" << transform;
+                    cropped = whole.transformed(transform, Qt::SmoothTransformation).copy(brect.toRect());
+                } else {
+                    qWarning() << "undefined transform from" << poly << "to" << brect;
+                }
+            }
             QString fname = QString("%1_%2.jpg").arg(openedImage.completeBaseName()).arg(subpart++);
             QImageWriter writer;
             writer.setFormat("jpg");
@@ -298,7 +325,8 @@ void MainWindow::on_actionSave_triggered()
                 qCritical() << "failed to save" << fname << "with size" << cropped.size();
             else
                 qDebug() << "saved" << fname;
-        }
+        } // Rectangle item in scene
+
     on_actionSave_template_triggered();
 }
 
@@ -419,4 +447,9 @@ void MainWindow::on_actionScan_triggered()
     if (!m_scannerConnection)
         m_scannerConnection = connect(ImageScanner::instance(), SIGNAL(done(QImage)), &mainScene, SLOT(image(QImage)));
     ImageScanner::instance()->scan("snapshot (4 x 6 and smaller)"); // TODO use a dialog instead of presets
+}
+
+void MainWindow::on_actionKeep_rectangular_toggled(bool k)
+{
+    mainScene.selectTool->setConstrainedResize(k);
 }

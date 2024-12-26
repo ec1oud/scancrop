@@ -59,6 +59,8 @@
     <addaction name="actionSelect"/>
     <addaction name="actionPan"/>
     <addaction name="actionBox"/>
+    <addaction name="separator"/>
+    <addaction name="actionKeep_rectangular"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -428,6 +430,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+K</string>
+   </property>
+  </action>
+  <action name="actionKeep_rectangular">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Keep rectangular</string>
    </property>
   </action>
  </widget>

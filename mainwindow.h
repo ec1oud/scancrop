@@ -57,10 +57,10 @@ private slots:
     void on_actionSelect_toggled(bool);
     void on_actionPan_toggled(bool);
     void on_actionOpen_triggered();
-
     void on_actionToggle_image_visible_triggered();
     void on_actionSettings_triggered();
     void on_actionScan_triggered();
+    void on_actionKeep_rectangular_toggled(bool k);
 
 private:
     Ui::MainWindow *ui;

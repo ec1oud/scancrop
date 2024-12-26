@@ -50,7 +50,7 @@ void SelectTool::mouseMoveEvent(QGraphicsSceneMouseEvent *ev)
 {
     if (ev->buttons()) {
         if (resizing)
-            resizing->resize(resizingHandle, ev->scenePos());
+            resizing->resize(resizingHandle, ev->scenePos(), m_constrainedResize);
         else if (dragging) {
             QPointF polyOrigin = dragging->mapToScene(dragging->polygon()[3]);
             dragging->moveBy(ev->scenePos().x() - polyOrigin.x(), ev->scenePos().y() - polyOrigin.y());
