@@ -10,6 +10,7 @@
 #include <QImageReader>
 #include <QImageWriter>
 #include <QLibraryInfo>
+#include <QMimeData>
 #include <QProcess>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -33,10 +34,12 @@ MainWindow::MainWindow(QStringList mainArgs, QWidget *parent)
     ui->bottomRightView->scale(2.0, 2.0);
     connect(&mainScene, SIGNAL(cursorPos(QPointF)), this, SLOT(cursorMoved(QPointF)));
     connect(mainScene.selectTool, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
+    connect(&mainScene, &MainImageScene::imageOpened, this, &MainWindow::imageOpened);
     ui->actionSelect->setChecked(true);
     if (args.count() > 0)
         open(args.first());
     updateNextPrevious();
+    setAcceptDrops(true);
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -65,9 +68,6 @@ bool MainWindow::openImage(QString fpath)
     if (!openedImage.exists())
         return false;
     return mainScene.openImage(fpath);
-    /// @todo needs to be after a delay
-    // ui->actionZoom_to_Fit->trigger();
-    // on_actionZoom_to_Fit_triggered();
 }
 
 void MainWindow::openTemplate(QString fpath)
@@ -132,6 +132,22 @@ bool MainWindow::event(QEvent *ev)
     return QMainWindow::event(ev);
 }
 
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    qDebug() << event->mimeData()->formats() << event->mimeData()->urls();
+    if (event->mimeData()->hasUrls())
+        event->acceptProposedAction();
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    const auto urls = event->mimeData()->urls();
+    if (urls.size() > 1)
+        qWarning() << "this doesn't yet support more than one file at a time";
+    if (urls.size() > 0 && urls.first().isLocalFile())
+        openImage(urls.first().toLocalFile());
+}
+
 void MainWindow::cursorMoved(QPointF pos)
 {
     QColor color = mainScene.colorAt((int)pos.x(), (int)pos.y());
@@ -158,6 +174,11 @@ void MainWindow::selectionChanged()
             ui->bottomLeftView->centerOn(poly[3]);
         }
     }
+}
+
+void MainWindow::imageOpened(const QString &)
+{
+    on_actionZoom_to_Fit_triggered();
 }
 
 void MainWindow::on_actionOpen_triggered()

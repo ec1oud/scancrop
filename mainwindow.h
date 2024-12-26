@@ -29,6 +29,8 @@ public:
 
 protected:
     bool event(QEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 
 private slots:
     void on_actionFind_images_triggered();
@@ -39,6 +41,7 @@ private slots:
     void cursorMoved(QPointF pos);
     void updateNextPrevious();
     void selectionChanged();
+    void imageOpened(const QString &path);
     void on_actionZoom_25_triggered();
     void on_actionOpen_template_triggered();
     void on_actionSave_template_triggered();

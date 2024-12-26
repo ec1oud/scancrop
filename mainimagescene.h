@@ -26,6 +26,7 @@ public:
 
 signals:
     void cursorPos(QPointF pos);
+    void imageOpened(const QString &path);
 
 public slots:
     void image(QImage pm);

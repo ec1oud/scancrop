@@ -189,5 +189,6 @@ bool MainImageScene::openImage(QString path)
             removeItem(i);
             delete i;
         }
+    emit imageOpened(path);
     return true;
 }
