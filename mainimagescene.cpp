@@ -1,3 +1,6 @@
+// Copyright (C) 2024 Shawn Rutledge <s@ecloud.org>
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "mainimagescene.h"
 #include "boxtool.h"
 #include <opencv2/imgproc/imgproc.hpp>
