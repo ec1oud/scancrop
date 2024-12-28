@@ -98,21 +98,22 @@ void MainWindow::openTemplate(QString fpath)
                     if (!openImage(imageName)) // try CWD
                     {
                         // Try to find the image in the given path
-                        qDebug() << "failed to find" << imageName << "in cwd, looking in" << openedTemplate.dir();
+                        qDebug() << "failed to open" << imageName << "in cwd, looking in" << openedTemplate.dir();
                         QFileInfo fi(openedTemplate.dir(), imageName);
                         if (!openImage(fi.absoluteFilePath())) {
                             bool success = false;
                             // Try to find the image in a subdir of the given path
                             QFileInfoList subs = openedTemplate.dir().entryInfoList(QDir::Dirs);
                             for (const QFileInfo &si : subs) {
-                                qDebug() << "still didn't find" << imageName << ", looking in" << si.absoluteFilePath();
+                                qDebug() << "still didn't open" << imageName << ", looking in" << si.absoluteFilePath();
                                 if (openImage(QFileInfo(QDir(si.absoluteFilePath()), imageName).absoluteFilePath())) {
                                     success = true;
                                     break;
                                 }
                             }
                             if (!success)
-                                qWarning() << "failed to find" << imageName;
+                                qWarning() << "failed to open" << imageName << "; supported formats:" <<
+                                    QImageReader::supportedImageFormats();
                         }
                     }
                 }
