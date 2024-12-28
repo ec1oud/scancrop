@@ -294,15 +294,11 @@ void MainWindow::on_actionSave_triggered()
             } else {
                 // a general polygon that we need to map to a rectangle (inverse perspective transformation)
                 auto brect = poly.boundingRect();
-                qreal maxdim = qMax(brect.width(), brect.height());
-                // make it square (good for instamatic, or for remapping to some other aspect ratio afterwards)
-                brect.setHeight(maxdim);
-                brect.setWidth(maxdim);
-                // alternative idea:
-                // auto topLen = QLineF(poly.first(), poly.at(1)).length();
-                // auto bottomLen = QLineF(poly.at(2), poly.at(3)).length();
+                auto topLen = QLineF(poly.first(), poly.at(1)).length();
+                auto bottomLen = QLineF(poly.at(2), poly.at(3)).length();
                 // assume that the bottom/top ratio is the same as the
                 // foreshortening that projected the rectangle (or square) to a trapezoid
+                brect.setHeight(brect.height() * bottomLen / topLen);
 
                 // depends on the fix for https://bugreports.qt.io/browse/QTBUG-21329
                 QTransform transform;
