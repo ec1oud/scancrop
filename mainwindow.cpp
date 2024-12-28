@@ -269,7 +269,8 @@ void MainWindow::on_actionSave_triggered()
             qreal rot = rect->rotation();
             qDebug("bounding rect %d, %d, %d x %d, rotating %lf degrees",  br.x(), br.y(), br.width(), br.height(), rot);
             QImage bounded = whole.copy(br);
-            if (ui->actionKeep_rectangular->isChecked()) {
+            if (rect->isConstrained()) {
+                // definitely just a rectangle
                 QTransform rotation;
                 rotation.rotate(rot);
                 QImage rotated = bounded.transformed(rotation, Qt::SmoothTransformation);
@@ -291,6 +292,7 @@ void MainWindow::on_actionSave_triggered()
                                                    .arg(openedImage.fileName()));
                 qDebug() << cropped.text();
             } else {
+                // a general polygon that we need to map to a rectangle (inverse perspective transformation)
                 auto brect = poly.boundingRect();
                 qreal maxdim = qMax(brect.width(), brect.height());
                 // make it square (good for instamatic, or for remapping to some other aspect ratio afterwards)

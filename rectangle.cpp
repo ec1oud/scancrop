@@ -78,11 +78,13 @@ Rectangle::Rectangle(QXmlStreamReader &r)
                 } else if (r.name().at(0) == QChar('y')) {
                     xOrY = 2;
 //					qDebug() << "see element" << r.name() << "pidx still" << pidx << "xory" << xOrY;
+                } else if (r.name() == "constrained") {
+                    xOrY = 3;
                 }
                 break;
             case QXmlStreamReader::Characters: {
                 bool ok = false;
-                qreal val = r.text().toString().toDouble(&ok);
+                qreal val = r.text().toDouble(&ok);
                 if (ok) {
 //						qDebug() << "got val" << val << "from string" << r.text() << "putting into xory" << xOrY;
                     switch (xOrY) {
@@ -91,6 +93,9 @@ Rectangle::Rectangle(QXmlStreamReader &r)
                             break;
                         case 2:
                             p.setY(val);
+                            break;
+                        case 3:
+                            m_constrained = r.text().toInt();
                             break;
                     }
                 }
@@ -197,6 +202,7 @@ double Rectangle::actualHeight() const
 
 void Rectangle::resize(ResizeHandleIdx hidx, QPointF pos, bool constrained)
 {
+    m_constrained = constrained;
     QPolygonF poly = polygon();
 //	QRectF bounds = QGraphicsPolygonItem::boundingRect();
 //	double aspect = poly[2].x() - poly[3].x() / poly[0].y() - poly[3].y();
@@ -379,6 +385,7 @@ void Rectangle::writeXML(QXmlStreamWriter &w)
     w.writeTextElement("x3", QString::number(poly[3].x()));
     w.writeTextElement("y3", QString::number(poly[3].y()));
     w.writeTextElement("angle", QString::number(rotation()));
+    w.writeTextElement("constrained", QString::number(m_constrained));
     w.writeEndElement();
 }
 

@@ -20,6 +20,7 @@ public:
 
     enum { Type = UserType + 1 };
     int type() const { return Type; }
+    bool isConstrained() const  { return m_constrained; }
 
     enum ResizeHandleIdx { RH_NONE, RH_TOP_LEFT, RH_TOP_RIGHT, RH_BOTTOM_RIGHT, RH_BOTTOM_LEFT };
 
@@ -58,7 +59,7 @@ protected:
     double sineB = 0;
     double cosineB = 1;
     static QPixmap *resizeHandle;
-    // bool m_constrained = true; // if false, it can be a trapezoid
+    bool m_constrained = true; // if false, it can be a trapezoid
 
     friend QDebug operator<<(QDebug debug, const Rectangle &option);
 };
