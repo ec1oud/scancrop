@@ -7,6 +7,7 @@
 #include "settings.h"
 #include "ui_preferencesdialog.h"
 #include <QDebug>
+#include <QImageWriter>
 
 PreferencesDialog::PreferencesDialog(QWidget *parent) : QDialog(parent), m_ui(new Ui::PreferencesDialog)
 {
@@ -21,6 +22,16 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) : QDialog(parent), m_ui(ne
         ++idx;
     }
     m_ui->scanSizes->setCurrentIndex(chosenIdx);
+    const QString selectedFormat = Settings::instance()->stringOrDefault(SETTING_GROUP_MAIN, "format", "");
+    const QByteArray selectedFormatBA = selectedFormat.toLocal8Bit();
+    bool selectedSupported = false;
+    for (const auto &f : QImageWriter::supportedImageFormats()) {
+        m_ui->saveFormatBox->addItem(QString::fromLocal8Bit(f));
+        if (f == selectedFormatBA)
+            selectedSupported = true;
+    }
+    if (selectedSupported)
+        m_ui->saveFormatBox->setCurrentText(selectedFormat);
 }
 
 PreferencesDialog::~PreferencesDialog() { delete m_ui; }
@@ -102,7 +113,7 @@ void PreferencesDialog::on_resolutionEdit_editingFinished()
     bool ok = false;
     int val = m_ui->resolutionEdit->text().toInt(&ok);
     if (ok)
-        Settings::instance()->setInt("main", "resolution", val);
+        Settings::instance()->setInt(SETTING_GROUP_MAIN, "resolution", val);
 }
 
 void PreferencesDialog::on_scanSizes_currentTextChanged(const QString &cur)
@@ -112,4 +123,9 @@ void PreferencesDialog::on_scanSizes_currentTextChanged(const QString &cur)
     m_ui->tl_y_edit->setText(QString::number(rect.top()));
     m_ui->br_x_edit->setText(QString::number(rect.right()));
     m_ui->br_y_edit->setText(QString::number(rect.bottom()));
+}
+
+void PreferencesDialog::on_saveFormatBox_currentTextChanged(const QString &f)
+{
+    Settings::instance()->setString(SETTING_GROUP_MAIN, "format", f);
 }

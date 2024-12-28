@@ -50,10 +50,10 @@ void ImageScanner::setSequence(int start, int end)
 
 QFileInfo ImageScanner::nextImageOutput()
 {
-    QFileInfo ret(QString("%1/image%2.jpg")
+    QFileInfo ret(QString("%1/image%2.%3")
                       .arg(Settings::instance()->stringOrDefault(SETTING_GROUP_SESSION, "sequenceDir", ""))
-                      //				m_outputImagePath.fileName()
-                      .arg(m_sequence, 4, 10, QLatin1Char('0')));
+                      .arg(m_sequence, 4, 10, QLatin1Char('0'))
+                      .arg(Settings::instance()->stringOrDefault(SETTING_GROUP_MAIN, "format", "jpg")));
     return ret;
 }
 

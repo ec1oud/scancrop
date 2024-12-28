@@ -33,6 +33,7 @@ private slots:
     void on_br_y_edit_editingFinished();
     void on_scannerBox_currentIndexChanged(int index);
     void on_scanSizes_currentTextChanged(const QString &cur);
+    void on_saveFormatBox_currentTextChanged(const QString &f);
 };
 
 #endif // PREFERENCESDIALOG_H

@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "mainwindow.h"
+#include "common.h"
 #include "imagescanner.h"
+#include "settings.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QFileDialog>
@@ -293,7 +295,7 @@ void MainWindow::on_actionSave_triggered()
                 qDebug() << cropped.text();
             } else {
                 // a general polygon that we need to map to a rectangle (inverse perspective transformation)
-                auto brect = poly.boundingRect();
+                auto brect = poly.boundingRect().toRect();
                 auto topLen = QLineF(poly.first(), poly.at(1)).length();
                 auto bottomLen = QLineF(poly.at(2), poly.at(3)).length();
                 // assume that the bottom/top ratio is the same as the
@@ -305,29 +307,36 @@ void MainWindow::on_actionSave_triggered()
                     brect.setHeight(brect.width());
                     brect.setWidth(h);
                 }
+                // make dimensions even numbers: HEIF is more compatible that way
+                if (brect.width() % 2)
+                    brect.setWidth(brect.width() + 1);
+                if (brect.height() % 2)
+                    brect.setHeight(brect.height() + 1);
                 // depends on the fix for https://bugreports.qt.io/browse/QTBUG-21329
                 QTransform transform;
-                bool ok = QTransform::quadToQuad(poly, brect, transform);
+                bool ok = QTransform::quadToQuad(poly, QRectF(brect), transform);
                 if (ok) {
                     QTransform trueMatrix = QImage::trueMatrix(transform, whole.width(), whole.height());
-                    brect.moveTopLeft(trueMatrix.map(poly.first()));
+                    brect.moveTopLeft(trueMatrix.map(poly.first()).toPoint());
                     qDebug() << "mapping" << poly << "to" << brect << "rot" << rot << "ok?" << ok << ":" << transform;
-                    cropped = whole.transformed(transform, Qt::SmoothTransformation).copy(brect.toRect());
+                    cropped = whole.transformed(transform, Qt::SmoothTransformation).copy(brect);
                 } else {
                     qWarning() << "undefined transform from" << poly << "to" << brect;
                 }
             }
-            QString fname = QString("%1_%2.jpg").arg(openedImage.completeBaseName()).arg(subpart++);
+            cropped.convertTo(QImage::Format_RGB888);
+            QString format = Settings::instance()->stringOrDefault(SETTING_GROUP_MAIN, "format", "jpg");
+            QString fname = QString("%1_%2.%3").arg(openedImage.completeBaseName()).arg(subpart++).arg(format);
             QImageWriter writer;
-            writer.setFormat("jpg");
+            writer.setFormat(format.toLocal8Bit());
             if (writer.supportsOption(QImageIOHandler::Description))
-                qDebug() << "jpeg supports embedded text";
+                qDebug() << format << "supports embedded text";
             else
-                qDebug() << "jpeg does not support embedded text";
+                qDebug() << format << "does not support embedded text";
             if (!cropped.save(fname))
                 qCritical() << "failed to save" << fname << "with size" << cropped.size();
             else
-                qDebug() << "saved" << fname;
+                qDebug() << "saved" << fname << "from" << cropped.format();
         } // Rectangle item in scene
 
     on_actionSave_template_triggered();
