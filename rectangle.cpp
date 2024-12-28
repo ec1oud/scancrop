@@ -18,6 +18,7 @@ Rectangle::Rectangle(qreal x, qreal y, qreal w, qreal h, QGraphicsItem *parent) 
     setPolygon(poly);
     setFlags(/*QGraphicsItem::ItemIsMovable |*/ QGraphicsItem::ItemIsSelectable);
     setZValue(1.0);
+    setPen({Qt::green, 0});
 }
 
 Rectangle::Rectangle(const cv::RotatedRect &rr, QGraphicsItem *parent) : QGraphicsPolygonItem(parent)
@@ -37,6 +38,7 @@ Rectangle::Rectangle(const cv::RotatedRect &rr, QGraphicsItem *parent) : QGraphi
     setPolygon(poly);
     setFlags(QGraphicsItem::ItemIsSelectable);
     setZValue(1.0);
+    setPen({Qt::green, 0});
 }
 
 Rectangle::Rectangle(const std::vector<cv::Point> &pts, QGraphicsItem *parent) : QGraphicsPolygonItem(parent)
@@ -53,6 +55,7 @@ Rectangle::Rectangle(const std::vector<cv::Point> &pts, QGraphicsItem *parent) :
     setPolygon(poly);
     setFlags(QGraphicsItem::ItemIsSelectable);
     setZValue(1.0);
+    setPen({Qt::green, 0});
 }
 
 Rectangle::Rectangle(QXmlStreamReader &r)
@@ -115,6 +118,7 @@ Rectangle::Rectangle(QXmlStreamReader &r)
     setPolygon(poly);
     setFlags(QGraphicsItem::ItemIsSelectable);
     setZValue(1.0);
+    setPen({Qt::green, 0});
 }
 
 QRectF Rectangle::boundingRect() const
@@ -328,8 +332,8 @@ int Rectangle::handleWidth()
 
 void Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-//	qDebug("Rectangle::paint; selected? %d", isSelected());
-    painter->setCompositionMode(QPainter::CompositionMode_Xor);
+//  qDebug("Rectangle::paint; selected? %d", isSelected());
+    // painter->setCompositionMode(QPainter::CompositionMode_Xor);
     QGraphicsPolygonItem::paint(painter, option, widget);
     //	QRectF bounds = boundingRect();
     //	painter->drawLine(bounds.x(), bounds.y(), 0, 0);
@@ -350,8 +354,8 @@ void Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 //		painter->drawPixmap(outerBounds.bottomRight(), *resizeHandle);
     }
     QPolygonF poly = polygon();
-    painter->setCompositionMode(QPainter::CompositionMode_Xor);
-    painter->setPen(Qt::blue);
+    // painter->setCompositionMode(QPainter::CompositionMode_Xor);
+    painter->setPen({Qt::cyan, 0});
     painter->drawLine(poly[3], poly[2]);
 }
 
