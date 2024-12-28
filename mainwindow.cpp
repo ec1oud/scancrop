@@ -299,14 +299,19 @@ void MainWindow::on_actionSave_triggered()
                 // assume that the bottom/top ratio is the same as the
                 // foreshortening that projected the rectangle (or square) to a trapezoid
                 brect.setHeight(brect.height() * bottomLen / topLen);
-
+                // But if rotation was requested, swap width and height.
+                if (qAbs(rot) > 45 && qAbs(rot) < 135) {
+                    const auto h = brect.height();
+                    brect.setHeight(brect.width());
+                    brect.setWidth(h);
+                }
                 // depends on the fix for https://bugreports.qt.io/browse/QTBUG-21329
                 QTransform transform;
                 bool ok = QTransform::quadToQuad(poly, brect, transform);
                 if (ok) {
                     QTransform trueMatrix = QImage::trueMatrix(transform, whole.width(), whole.height());
                     brect.moveTopLeft(trueMatrix.map(poly.first()));
-                    qDebug() << "mapping" << poly << "to" << brect << "ok?" << ok << ":" << transform;
+                    qDebug() << "mapping" << poly << "to" << brect << "rot" << rot << "ok?" << ok << ":" << transform;
                     cropped = whole.transformed(transform, Qt::SmoothTransformation).copy(brect.toRect());
                 } else {
                     qWarning() << "undefined transform from" << poly << "to" << brect;
