@@ -266,12 +266,12 @@ void MainWindow::on_actionSave_triggered()
     for (QGraphicsItem *i : mainScene.items())
         if (i->type() == Rectangle::Type) {
             Rectangle *rect = (Rectangle *)i;
-            QPolygonF poly = rect->polygon();
-            QImage cropped;
             QRect br = rect->mapRectToScene(rect->boundingRect()).toRect();
             qreal rot = rect->rotation();
             qDebug("bounding rect %d, %d, %d x %d, rotating %lf degrees",  br.x(), br.y(), br.width(), br.height(), rot);
             QImage bounded = whole.copy(br);
+            QImage cropped;
+            QPolygonF poly = rect->polygon();
             if (rect->isConstrained()) {
                 // definitely just a rectangle
                 QTransform rotation;
