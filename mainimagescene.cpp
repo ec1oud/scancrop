@@ -19,6 +19,7 @@ MainImageScene::MainImageScene() : QGraphicsScene(), boxTool(new BoxTool(this)),
     mainImageView.setFlag(QGraphicsItem::ItemIsSelectable, false);
     mainImageView.setCacheMode(QGraphicsItem::DeviceCoordinateCache);
     addItem(&mainImageView);
+    connect(this, &QGraphicsScene::changed, [this]() { m_changed = true; });
 }
 
 void MainImageScene::image(QImage pm)

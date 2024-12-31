@@ -36,6 +36,7 @@
     <addaction name="actionOpen"/>
     <addaction name="actionScan"/>
     <addaction name="actionSave"/>
+    <addaction name="actionSave_template"/>
     <addaction name="actionOpen_template"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>

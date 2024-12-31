@@ -12,6 +12,7 @@
 #include <QImageReader>
 #include <QImageWriter>
 #include <QLibraryInfo>
+#include <QMessageBox>
 #include <QMimeData>
 #include <QProcess>
 #include <QXmlStreamReader>
@@ -354,7 +355,14 @@ void MainWindow::on_actionSelect_All_triggered()
             i->setSelected(true);
 }
 
-void MainWindow::on_actionQuit_triggered() { QApplication::instance()->quit(); }
+void MainWindow::on_actionQuit_triggered()
+{
+    if (mainScene.isChanged() && mainScene.items().size() > 0) {
+        if (QMessageBox::question(this, tr("Save changes?"), tr("Save XML template (crop boxes)?")) == QMessageBox::Yes)
+            on_actionSave_template_triggered();
+    }
+    QApplication::instance()->quit();
+}
 
 void MainWindow::on_actionSave_template_triggered()
 {

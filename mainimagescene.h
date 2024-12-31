@@ -24,6 +24,8 @@ public:
     QColor colorAt(int x, int y);
     QVector<QRectF> detectPhotoBoundaries();
     QGraphicsPixmapItem &imageView() { return mainImageView; }
+    bool isChanged() { return m_changed; }
+    void resetChanged() { m_changed = false; }
 
 signals:
     void cursorPos(QPointF pos);
@@ -47,6 +49,7 @@ private:
     QImage mainImage;
     QGraphicsPixmapItem mainImageView;
     Tool *tool;
+    bool m_changed = false;
 };
 
 #endif // MAINIMAGESCENE_H
