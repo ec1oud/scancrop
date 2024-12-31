@@ -458,7 +458,7 @@ void MainWindow::on_actionScan_triggered()
 {
     if (!m_scannerConnection)
         m_scannerConnection = connect(ImageScanner::instance(), SIGNAL(done(QImage)), &mainScene, SLOT(image(QImage)));
-    ImageScanner::instance()->scan("snapshot (4 x 6 and smaller)"); // TODO use a dialog instead of presets
+    m_scanDialog.open();
 }
 
 void MainWindow::on_actionKeep_rectangular_toggled(bool k)

@@ -10,7 +10,6 @@
 #define STR_PRODUCT "ScanCrop"
 
 #define SETTING_GROUP_MAIN "main"
-#define SETTING_GROUP_SESSION "session"
 #define SETTING_GROUP_OPEN_FILES "open-files"
 #define SETTING_GROUP_RECENT_FILES "recent-files"
 #define SETTING_RECENT_FILES_LIMIT "recentFilesLimit"

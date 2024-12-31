@@ -6,6 +6,7 @@
 
 #include "mainimagescene.h"
 #include "preferencesdialog.h"
+#include "scandialog.h"
 
 #include <QFileInfo>
 #include <QLineEdit>
@@ -71,6 +72,7 @@ private:
     int argsIdx;
     bool m_zoomFitPending = true;
     PreferencesDialog m_prefsDialog;
+    ScanDialog m_scanDialog;
     QMetaObject::Connection m_scannerConnection;
 };
 

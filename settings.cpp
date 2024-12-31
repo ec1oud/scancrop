@@ -7,6 +7,7 @@
 static const QString SIZE_SNAPSHOT = QString::fromUtf8("snapshot (4 x 6 and smaller)");
 static const QString SIZE_MEDIUM = QString::fromUtf8("5 x 7");
 static const QString SIZE_LARGE = QString::fromUtf8("full page");
+static const QString SCAN_SIZE_MAX = QString::fromUtf8("max");
 
 Settings *Settings::instance()
 {
@@ -17,7 +18,8 @@ Settings *Settings::instance()
 Settings::Settings(QObject *parent) : QSettings(STR_ORGANIZATION, STR_PRODUCT, parent)
 {
     qDebug() << "settings stored at" << fileName();
-    m_allMediaTypes << SIZE_SNAPSHOT << SIZE_MEDIUM << SIZE_LARGE;
+    // TODO iterate all the sizes stored in the ini file
+    m_allMediaTypes << SIZE_SNAPSHOT << SIZE_MEDIUM << SIZE_LARGE << SCAN_SIZE_MAX;
     beginGroup(SETTING_GROUP_SCAN_GEOMETRY);
     QRectF r = parseGeometryString(value(SIZE_SNAPSHOT).toString());
     if (r.isNull())
@@ -27,7 +29,7 @@ Settings::Settings(QObject *parent) : QSettings(STR_ORGANIZATION, STR_PRODUCT, p
         setValue(SIZE_MEDIUM, QVariant(toString(QRectF(0, 0, 130, 180))));
     r = parseGeometryString(value(SIZE_LARGE).toString());
     if (r.isNull())
-        setValue(SIZE_LARGE, QVariant(toString(QRectF(0, 0, 220, 280))));
+        setValue(SIZE_LARGE, QVariant(toString(QRectF(0, 0, 215, 280))));
     endGroup();
     if (intOrDefault("main", "resolution", -1) < 0)
         setInt("main", "resolution", 300);

@@ -51,7 +51,7 @@ void ImageScanner::setSequence(int start, int end)
 QFileInfo ImageScanner::nextImageOutput()
 {
     QFileInfo ret(QString("%1/image%2.%3")
-                      .arg(Settings::instance()->stringOrDefault(SETTING_GROUP_SESSION, "sequenceDir", ""))
+                      .arg(Settings::instance()->stringOrDefault(SETTING_GROUP_MAIN, "scanDir", "scans"))
                       .arg(m_sequence, 4, 10, QLatin1Char('0'))
                       .arg(Settings::instance()->stringOrDefault(SETTING_GROUP_MAIN, "format", "jpg")));
     return ret;
@@ -110,11 +110,29 @@ void ImageScanner::run()
         status = sane_read(m_scanner, all.scanLine(line++), params.bytes_per_line, &len);
         emit progress(line);
     }
-    qDebug() << "scan done" << all;
+    auto path = nextImageOutput().absoluteFilePath();
+    all.save(path);
+    ++m_sequence;
+    qDebug() << "scan done" << all << "; saved to" << path;
     emit done(all);
 }
 
-QString ImageScanner::scannerDev(int idx) { return m_allDevices.at(idx)->name; }
+QString ImageScanner::scannerDev(int idx)
+{
+    SANE_Status status = sane_open(m_allDevices.at(idx)->name, &m_scanner);
+    if (status == SANE_STATUS_GOOD) {
+        getOptions(m_scanner);
+    } else {
+        qWarning() << "failed to open" << m_allDevices.at(idx)->name;
+    }
+    return m_allDevices.at(idx)->name;
+}
+
+void ImageScanner::setScanDir(const QString &path)
+{
+    Settings::instance()->setString(SETTING_GROUP_MAIN, "scanDir", path);
+    // TODO check for highest-numbered file there
+}
 
 void ImageScanner::setOptions(SANE_Handle dev, QString mediaType)
 {
@@ -195,5 +213,42 @@ void ImageScanner::getOptions(SANE_Handle dev)
                 }
             }
         }
+        if (option_desc && option_desc->constraint_type == SANE_CONSTRAINT_RANGE) {
+            double min = 0;
+            double max = 0;
+            double quant = 0;
+            if (option_desc->type == SANE_TYPE_FIXED) {
+                min = SANE_UNFIX(option_desc->constraint.range->min);
+                max = SANE_UNFIX(option_desc->constraint.range->max);
+                quant = SANE_UNFIX(option_desc->constraint.range->quant);
+            }
+            if (QByteArray(option_desc->name) == "br-x")
+                m_maxSize.setWidth(max);
+            else if (QByteArray(option_desc->name) == "br-y")
+                m_maxSize.setHeight(max);
+            qDebug() << "    range" << min << "->" << max << "quant" << quant << unitName(option_desc->unit);
+        }
     }
+    Settings::instance()->setScanGeometry("max", {0, 0, m_maxSize.width(), m_maxSize.height()});
+}
+
+QString ImageScanner::unitName(SANE_Unit unit)
+{
+    switch (unit) {
+    case SANE_UNIT_NONE:
+        return {}; // unitless
+    case SANE_UNIT_PIXEL:
+        return tr("px");
+    case SANE_UNIT_BIT:
+        return tr("bits");
+    case SANE_UNIT_MM:
+        return tr("mm");
+    case SANE_UNIT_DPI:
+        return tr("dots/inch");
+    case SANE_UNIT_PERCENT:
+        return tr("%");
+    case SANE_UNIT_MICROSECOND:
+        return tr("µS");
+    }
+    return tr("unk");
 }

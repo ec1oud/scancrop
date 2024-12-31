@@ -12,6 +12,7 @@ SOURCES += main.cpp \
     selecttool.cpp \
     settings.cpp \
     preferencesdialog.cpp \
+    scandialog.cpp \
     rectangle.cpp \
     mainimagescene.cpp \
 
@@ -24,10 +25,11 @@ HEADERS += mainwindow.h \
     selecttool.h \
     settings.h \
     preferencesdialog.h \
+    scandialog.h \
     rectangle.h \
     mainimagescene.h \
 
-FORMS += mainwindow.ui preferencesdialog.ui
+FORMS += mainwindow.ui preferencesdialog.ui scandialog.ui
 
 !isEmpty(OPENCV_DIR) {
     INCLUDEPATH += $$OPENCV_DIR/include

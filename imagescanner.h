@@ -18,12 +18,12 @@ public:
     void scan(QString mediaType);
     QStringList allScannerNames();
     QString scannerDev(int idx);
+    QSizeF maxSize() { return m_maxSize; }
 
     /**
-        @param path	prefix part of the file path, to which the index number
-                    and extension will be appended
+        @param path	to directory
     */
-    // void setPath(QFileInfo path) { m_outputImagePath = path; }
+    void setScanDir(const QString &path);
 
     /**
         @param start inclusive starting index
@@ -48,9 +48,11 @@ private:
     ImageScanner();
     void setOptions(SANE_Handle dev, QString mediaType);
     void getOptions(SANE_Handle dev);
+    QString unitName(SANE_Unit unit);
 
     QList<const SANE_Device *> m_allDevices;
     SANE_Handle m_scanner;
+    QSizeF m_maxSize;
     QString m_mediaType;
     int m_sequenceStart;
     int m_sequenceEnd;
