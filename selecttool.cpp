@@ -27,7 +27,7 @@ void SelectTool::mousePressEvent(QGraphicsSceneMouseEvent *ev)
         // Assume that all UserType items can be resized.
         /// @todo We need an intermediate class for such items, but for now
         /// there is only Rectangle.
-        Rectangle *item = (Rectangle *)itemsHere[0];
+        Rectangle *item = static_cast<Rectangle *>(itemsHere[0]);
         if (item->isSelected()) {
             // See which resize handle, if any, is under the cursor.
             resizingHandle = item->handleAt(ev->scenePos());
@@ -105,7 +105,7 @@ void SelectTool::mouseLeftClickEvent(QGraphicsSceneMouseEvent *ev)
         }
 //		if (item->type() > QGraphicsItem::UserType)
 //		{
-//			bounds = ((Rectangle*)item)->rect();
+//			bounds = static_cast<Rectangle *>(item)->rect();
 //			qDebug("    rect is %d, %d %d x %d", (int)bounds.x(), (int)bounds.y(), (int)bounds.width(),
 //(int)bounds.height());
 //		}

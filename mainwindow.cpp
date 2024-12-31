@@ -171,7 +171,7 @@ void MainWindow::selectionChanged()
     if (mainScene.selectedItems().count() > 0) {
         QGraphicsItem *i = mainScene.selectedItems()[0];
         if (i->type() == Rectangle::Type) {
-            Rectangle *rect = (Rectangle *)i;
+            Rectangle *rect = static_cast<Rectangle *>(i);
             QPolygonF poly = rect->mapToScene(rect->polygon());
             ui->topLeftView->centerOn(poly[0]);
             ui->topRightView->centerOn(poly[1]);
@@ -243,7 +243,7 @@ void MainWindow::on_actionRotate_Clockwise_triggered()
 {
     for (QGraphicsItem *i : mainScene.selectedItems()) {
         if (i->type() == Rectangle::Type) {
-            Rectangle *rect = (Rectangle *)i;
+            Rectangle *rect = static_cast<Rectangle *>(i);
             rect->rotate(true);
         }
     }
@@ -253,7 +253,7 @@ void MainWindow::on_actionRotate_CounterClockwise_triggered()
 {
     for (QGraphicsItem *i : mainScene.selectedItems()) {
         if (i->type() == Rectangle::Type) {
-            Rectangle *rect = (Rectangle *)i;
+            Rectangle *rect = static_cast<Rectangle *>(i);
             rect->rotate(false);
         }
     }
@@ -265,7 +265,7 @@ void MainWindow::on_actionSave_triggered()
     int subpart = 0;
     for (QGraphicsItem *i : mainScene.items())
         if (i->type() == Rectangle::Type) {
-            Rectangle *rect = (Rectangle *)i;
+            Rectangle *rect = static_cast<Rectangle *>(i);
             QRect br = rect->mapRectToScene(rect->boundingRect()).toRect();
             qreal rot = rect->rotation();
             qDebug("bounding rect %d, %d, %d x %d, rotating %lf degrees",  br.x(), br.y(), br.width(), br.height(), rot);
@@ -378,7 +378,7 @@ void MainWindow::on_actionSave_template_triggered()
     w.writeTextElement("original", openedImage.fileName());
     for (QGraphicsItem *i : mainScene.items())
         if (i->type() == Rectangle::Type)
-            ((Rectangle *)i)->writeXML(w);
+            static_cast<Rectangle *>(i)->writeXML(w);
     w.writeEndElement();
     w.writeEndDocument();
     qDebug() << "wrote" << out.fileName();
