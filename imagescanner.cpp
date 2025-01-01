@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
+#include <QImageWriter>
 #include <QMessageBox>
 #include <sane/saneopts.h>
 
@@ -110,10 +111,14 @@ void ImageScanner::run()
         status = sane_read(m_scanner, all.scanLine(line++), params.bytes_per_line, &len);
         emit progress(line);
     }
-    auto path = nextImageOutput().absoluteFilePath();
-    all.save(path);
+    const QString format = Settings::instance()->stringOrDefault(SETTING_GROUP_MAIN, "format", "png");
+    const int quality = Settings::instance()->intOrDefault(SETTING_GROUP_MAIN, "scanQuality", 100);
+    const auto path = nextImageOutput().absoluteFilePath();
+    QImageWriter writer(path, format.toLocal8Bit());
+    writer.setQuality(quality);
+    writer.write(all);
     ++m_sequence;
-    qDebug() << "scan done" << all << "; saved to" << path;
+    qDebug() << "scan done" << all << "; saved to" << path << "q" << quality;
     emit done(all);
 }
 

@@ -328,16 +328,17 @@ void MainWindow::on_actionSave_triggered()
             cropped.convertTo(QImage::Format_RGB888);
             QString format = Settings::instance()->stringOrDefault(SETTING_GROUP_MAIN, "format", "jpg");
             QString fname = QString("%1_%2.%3").arg(openedImage.completeBaseName()).arg(subpart++).arg(format);
-            QImageWriter writer;
-            writer.setFormat(format.toLocal8Bit());
+            const int quality = Settings::instance()->intOrDefault(SETTING_GROUP_MAIN, "cropQuality", 90);
+            QImageWriter writer(fname, format.toLocal8Bit());
+            writer.setQuality(quality);
             if (writer.supportsOption(QImageIOHandler::Description))
                 qDebug() << format << "supports embedded text";
             else
                 qDebug() << format << "does not support embedded text";
-            if (!cropped.save(fname))
+            if (!writer.write(cropped))
                 qCritical() << "failed to save" << fname << "with size" << cropped.size();
             else
-                qDebug() << "saved" << fname << "from" << cropped.format();
+                qDebug() << "saved" << fname << "from" << cropped.format() << "q" << quality << "supported?" << writer.supportsOption(QImageIOHandler::Quality);
         } // Rectangle item in scene
 
     on_actionSave_template_triggered();

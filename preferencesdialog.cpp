@@ -42,3 +42,13 @@ void PreferencesDialog::on_saveFormatBox_currentTextChanged(const QString &f)
 {
     Settings::instance()->setString(SETTING_GROUP_MAIN, "format", f);
 }
+
+void PreferencesDialog::on_scanQualityBox_valueChanged(int q)
+{
+    Settings::instance()->setInt(SETTING_GROUP_MAIN, "scanQuality", q);
+}
+
+void PreferencesDialog::on_cropQualityBox_valueChanged(int q)
+{
+    Settings::instance()->setInt(SETTING_GROUP_MAIN, "cropQuality", q);
+}

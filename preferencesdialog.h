@@ -26,6 +26,8 @@ private:
 
 private slots:
     void on_saveFormatBox_currentTextChanged(const QString &f);
+    void on_scanQualityBox_valueChanged(int q);
+    void on_cropQualityBox_valueChanged(int q);
 };
 
 #endif // PREFERENCESDIALOG_H

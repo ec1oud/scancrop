@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>259</width>
-    <height>144</height>
+    <height>175</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,6 +39,46 @@
        </item>
        <item row="0" column="1">
         <widget class="QComboBox" name="saveFormatBox"/>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="scanQualityBox">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Scan quality</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="cropQualityBox">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>90</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Crop quality</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
