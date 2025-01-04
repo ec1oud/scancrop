@@ -1,7 +1,11 @@
 // Copyright (C) 2024 Shawn Rutledge <s@ecloud.org>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "mainimagescene.h"
 #include "rectangle.h"
+#include <QGraphicsSceneContextMenuEvent>
+#include <QInputDialog>
+#include <QMenu>
 #include <QPainter>
 #include <QPixmap>
 #include <QtDebug>
@@ -63,41 +67,35 @@ Rectangle::Rectangle(QXmlStreamReader &r)
     QPolygonF poly(5);
     bool done = false;
     QPointF p;
-    int xOrY = 0;
     int pidx = 0;
+    QString tagName;
     while (!done && !r.atEnd()) {
         QXmlStreamReader::TokenType t = r.tokenType();
 //		qDebug() << "rect constructor looking at token type" << r.tokenString();
         switch (t) {
             case QXmlStreamReader::StartElement:
-//				qDebug() << r.name();
-                if (r.name().at(0) == QChar('x')) {
-                    pidx = r.name().at(1).digitValue();
-                    xOrY = 1;
-//					qDebug() << "see element" << r.name() << "from which got idx" << pidx << "xory" << xOrY;
-                } else if (r.name().at(0) == QChar('y')) {
-                    xOrY = 2;
-//					qDebug() << "see element" << r.name() << "pidx still" << pidx << "xory" << xOrY;
-                } else if (r.name() == "constrained") {
-                    xOrY = 3;
-                }
+                tagName = r.name().toString();
                 break;
             case QXmlStreamReader::Characters: {
-                bool ok = false;
-                qreal val = r.text().toDouble(&ok);
-                if (ok) {
-//						qDebug() << "got val" << val << "from string" << r.text() << "putting into xory" << xOrY;
-                    switch (xOrY) {
-                        case 1:
-                            p.setX(val);
-                            break;
-                        case 2:
-                            p.setY(val);
-                            break;
-                        case 3:
-                            m_constrained = r.text().toInt();
-                            break;
-                    }
+                if (r.text().trimmed().isEmpty())
+                    break;
+                qDebug() << tagName << r.text();
+                if (tagName.at(0) == QChar('x')) {
+                    pidx = tagName.at(1).digitValue();
+                    bool ok = false;
+                    qreal val = r.text().toDouble(&ok);
+                    if (ok)
+                        p.setX(val);
+                } else if (tagName.at(0) == QChar('y')) {
+                    pidx = tagName.at(1).digitValue();
+                    bool ok = false;
+                    qreal val = r.text().toDouble(&ok);
+                    if (ok)
+                        p.setY(val);
+                } else if (tagName == "constrained") {
+                    m_constrained = r.text().toInt();
+                } else if (tagName == "name") {
+                    m_name = r.text().toString();
                 }
             } break;
             case QXmlStreamReader::EndElement:
@@ -108,8 +106,7 @@ Rectangle::Rectangle(QXmlStreamReader &r)
                     poly[pidx] = p;
                     if (pidx == 0)
                         poly[4] = p;
-//					qDebug("endElement yx, pidx %d, xory %d, setting point %lf, %lf", pidx, xOrY, p.x(), p.y());
-                    xOrY = 0;
+//					qDebug("endElement yx, pidx %d, setting point %lf, %lf", pidx, p.x(), p.y());
                 }
                 break;
             default:
@@ -366,10 +363,53 @@ void Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 //		painter->drawPixmap(outerBounds.bottomLeft(), *resizeHandle);
 //		painter->drawPixmap(outerBounds.bottomRight(), *resizeHandle);
     }
-    QPolygonF poly = polygon();
+    const QPolygonF poly = polygon();
+    if (!m_name.isNull()) {
+        // auto center = poly.boundingRect().center();
+        // painter->drawText(center, m_name);
+        auto availableWidth = poly.boundingRect().width();
+        auto fm = painter->fontMetrics();
+        auto w = fm.horizontalAdvance(m_name);
+        if (w > availableWidth || w < availableWidth / 2) {
+            QFont font = painter->font();
+            qDebug() << "availableWidth" << availableWidth << "default font text width" << w << "so changing font size"
+                     << font.pointSizeF() << "->" << font.pointSizeF() * availableWidth / w;
+            font.setPointSizeF(font.pointSizeF() * availableWidth / w);
+            painter->setFont(font);
+        }
+        painter->setPen(Qt::green);
+        painter->drawText(poly.boundingRect(), m_name, {Qt::AlignHCenter | Qt::AlignVCenter});
+    }
     // painter->setCompositionMode(QPainter::CompositionMode_Xor);
     painter->setPen({Qt::cyan, 0});
     painter->drawLine(poly[3], poly[2]);
+}
+
+void Rectangle::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    QMenu menu;
+    menu.addAction(&m_setNameAction);
+    menu.addAction(&m_rotateCWAction);
+    menu.addAction(&m_rotateCCWAction);
+    QAction *a = menu.exec(event->screenPos());
+    if (a == &m_setNameAction) {
+        QString s = QInputDialog::getText(nullptr, MainImageScene::tr("Name for cropped area"),
+                                          MainImageScene::tr("Name for cropped area:"),
+                                          QLineEdit::Normal, m_name);
+        if (!s.isNull())
+            setName(s);
+    } else if (a == &m_rotateCWAction) {
+        rotate(true);
+    } else if (a == &m_rotateCCWAction) {
+        rotate(false);
+    }
+}
+
+void Rectangle::setName(const QString &name)
+{
+    if (m_name == name)
+        return;
+    m_name = name;
 }
 
 void Rectangle::writeXML(QXmlStreamWriter &w)
@@ -386,6 +426,8 @@ void Rectangle::writeXML(QXmlStreamWriter &w)
     w.writeTextElement("y3", QString::number(poly[3].y()));
     w.writeTextElement("angle", QString::number(rotation()));
     w.writeTextElement("constrained", QString::number(m_constrained));
+    if (!m_name.isNull())
+        w.writeTextElement("name", m_name);
     w.writeEndElement();
 }
 

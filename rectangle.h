@@ -4,6 +4,7 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 
+#include <QAction>
 #include <QGraphicsRectItem>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -19,7 +20,7 @@ public:
     Rectangle(QXmlStreamReader &r);
 
     enum { Type = UserType + 1 };
-    int type() const { return Type; }
+    int type() const override { return Type; }
     bool isConstrained() const  { return m_constrained; }
 
     enum ResizeHandleIdx { RH_NONE, RH_TOP_LEFT, RH_TOP_RIGHT, RH_BOTTOM_RIGHT, RH_BOTTOM_LEFT };
@@ -37,7 +38,7 @@ public:
     double actualWidth() const;
     double actualHeight() const;
 
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
 
     /**
         Degrees counter-clockwise from the default rotation
@@ -46,9 +47,15 @@ public:
     */
     qreal rotation() const;
 
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
 
     void writeXML(QXmlStreamWriter &w);
+
+    QString name() const { return m_name; }
+    void setName(const QString &name);
+
+protected:
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 protected:
     mutable double width = 0;
@@ -58,10 +65,16 @@ protected:
     double cosineA = 1;
     double sineB = 0;
     double cosineB = 1;
-    static QPixmap *resizeHandle;
+    QString m_name;
+    QAction m_setNameAction = QAction(QAction::tr("Set name"));
+    QAction m_rotateCWAction = QAction(QIcon(":/images/shape_rotate_clockwise.png"), QAction::tr("Rotate ⟳"));
+    QAction m_rotateCCWAction = QAction(QIcon(":/images/shape_rotate_anticlockwise.png"), QAction::tr("Rotate ⟲"));
     bool m_constrained = true; // if false, it can be a trapezoid
 
+    static QPixmap *resizeHandle;
+
     friend QDebug operator<<(QDebug debug, const Rectangle &option);
+private:
 };
 
 QDebug operator<<(QDebug debug, const Rectangle &option);

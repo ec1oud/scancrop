@@ -327,7 +327,15 @@ void MainWindow::on_actionSave_triggered()
             }
             cropped.convertTo(QImage::Format_RGB888);
             QString format = Settings::instance()->stringOrDefault(SETTING_GROUP_MAIN, "format", "jpg");
-            QString fname = QString("%1_%2.%3").arg(openedImage.completeBaseName()).arg(subpart++).arg(format);
+            QString fname = rect->name();
+            if (fname.isEmpty())
+                fname = QString("%1_%2.%3").arg(openedImage.completeBaseName()).arg(subpart++).arg(format);
+            else
+                fname = QString("%1.%2").arg(fname).arg(format);
+            if (QFileInfo(fname).exists() &&
+                QMessageBox::question(this, "Replace?",
+                                      tr("Replace existing %1?").arg(fname)) != QMessageBox::Yes)
+                    continue; // skip this image
             const int quality = Settings::instance()->intOrDefault(SETTING_GROUP_MAIN, "cropQuality", 90);
             QImageWriter writer(fname, format.toLocal8Bit());
             writer.setQuality(quality);
