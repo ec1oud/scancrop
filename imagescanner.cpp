@@ -119,6 +119,7 @@ void ImageScanner::run()
     writer.write(all);
     ++m_sequence;
     qDebug() << "scan done" << all << "; saved to" << path << "q" << quality;
+    QFile::setPermissions(path, QFileDevice::ReadOwner);
     emit done(all);
 }
 

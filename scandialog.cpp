@@ -54,6 +54,7 @@ void ScanDialog::changeEvent(QEvent *e)
 void ScanDialog::imageScanned(QImage img)
 {
 	m_scannedImage = img;
+    m_ui->scanSequenceFrom->setValue(m_ui->scanSequenceFrom->value() + 1);
     update();
 }
 
