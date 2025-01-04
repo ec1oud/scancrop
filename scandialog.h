@@ -39,7 +39,8 @@ private slots:
     void on_br_y_edit_editingFinished();
     void on_scannerBox_currentIndexChanged(int index);
     void on_scanSizes_currentTextChanged(const QString &cur);
-	void on_scanButton_clicked();
+    void on_flipCB_toggled(bool checked);
+    void on_scanButton_clicked();
     void on_scanSequenceFrom_valueChanged(int val);
     void on_outputChooseButton_clicked();
 };

@@ -15,7 +15,7 @@ class ImageScanner : public QThread
     Q_OBJECT
 public:
     static ImageScanner *instance();
-    void scan(QString mediaType);
+    void scan(QRectF bounds);
     QStringList allScannerNames();
     QString scannerDev(int idx);
     QSizeF maxSize() { return m_maxSize; }
@@ -46,14 +46,14 @@ protected:
 
 private:
     ImageScanner();
-    void setOptions(SANE_Handle dev, QString mediaType);
+    void setOptions(SANE_Handle dev);
     void getOptions(SANE_Handle dev);
     QString unitName(SANE_Unit unit);
 
     QList<const SANE_Device *> m_allDevices;
     SANE_Handle m_scanner;
     QSizeF m_maxSize;
-    QString m_mediaType;
+    QRectF m_bounds;
     int m_sequenceStart;
     int m_sequenceEnd;
     int m_sequence;

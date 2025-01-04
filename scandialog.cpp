@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileDialog>
+#include <QMessageBox>
 
 ScanDialog::ScanDialog(QWidget *parent) :
     QDialog(parent),
@@ -137,23 +138,41 @@ void ScanDialog::on_resolutionEdit_editingFinished()
 
 void ScanDialog::on_scanSizes_currentTextChanged(const QString &cur)
 {
-    QRectF rect = Settings::instance()->scanGeometry(cur);
-    m_ui->tl_x_edit->setText(QString::number(rect.left()));
-    m_ui->tl_y_edit->setText(QString::number(rect.top()));
-    m_ui->br_x_edit->setText(QString::number(rect.right()));
-    m_ui->br_y_edit->setText(QString::number(rect.bottom()));
+    const QRectF rect = Settings::instance()->scanGeometry(cur);
+    const bool flip = m_ui->flipCB->isChecked();
+    m_ui->tl_x_edit->setText(QString::number(flip ? rect.top() : rect.left()));
+    m_ui->tl_y_edit->setText(QString::number(flip ? rect.left() : rect.top()));
+    m_ui->br_x_edit->setText(QString::number(flip ? rect.bottom() : rect.right()));
+    m_ui->br_y_edit->setText(QString::number(flip ? rect.right() : rect.bottom()));
     Settings::instance()->setString(SETTING_GROUP_MAIN, "geometry", cur);
+}
+
+void ScanDialog::on_flipCB_toggled(bool)
+{
+    on_scanSizes_currentTextChanged(m_ui->scanSizes->currentText());
 }
 
 void ScanDialog::on_scanButton_clicked()
 {
-//	QRectF scanArea = Settings::instance()->scanGeometry(m_ui->mediaTypes->currentText());
-//	qDebug() << "scan area: " << scanArea;
     int from = m_ui->scanSequenceFrom->value();
     m_scanner->setSequence(m_ui->scanSequenceFrom->value(), from + 10000);
-    // m_scanner->scan(m_ui->mediaTypes->currentText());
-    ImageScanner::instance()->scan(Settings::instance()->stringOrDefault(
-        SETTING_GROUP_MAIN, "geometry", "snapshot (4 x 6 and smaller)"));
+    double x1, y1, x2, y2;
+    auto parse = [this](double &v, QLineEdit *le) -> bool {
+        bool ok = false;
+        v = le->text().toDouble(&ok);
+        if (!ok) {
+            QMessageBox::critical(this, tr("Failed to parse number"),
+                                  tr("Failed to parse '%1'").arg(le->text()));
+        }
+        return ok;
+    };
+    if (!parse(x1, m_ui->tl_x_edit)) return;
+    if (!parse(y1, m_ui->tl_y_edit)) return;
+    if (!parse(x2, m_ui->br_x_edit)) return;
+    if (!parse(y2, m_ui->br_y_edit)) return;
+    QRectF bounds(x1, y1, x2 - x1, y2 - y1);
+    qDebug() << "scan area: " << bounds;
+    ImageScanner::instance()->scan(bounds);
 }
 
 void ScanDialog::update()

@@ -58,9 +58,9 @@ QFileInfo ImageScanner::nextImageOutput()
     return ret;
 }
 
-void ImageScanner::scan(QString mediaType)
+void ImageScanner::scan(QRectF bounds)
 {
-    m_mediaType = mediaType;
+    m_bounds = bounds;
     start();
 }
 
@@ -76,7 +76,7 @@ void ImageScanner::run()
         QMessageBox::critical(QApplication::activeWindow(), tr(STR_PRODUCT), tr("Failed to open scanner: '%1'").arg(scannerDev));
         emit done(QImage());
     }
-    setOptions(m_scanner, m_mediaType);
+    setOptions(m_scanner);
     getOptions(m_scanner);
     status = sane_start(m_scanner);
     if (status != SANE_STATUS_GOOD) {
@@ -139,15 +139,14 @@ void ImageScanner::setScanDir(const QString &path)
     // TODO check for highest-numbered file there
 }
 
-void ImageScanner::setOptions(SANE_Handle dev, QString mediaType)
+void ImageScanner::setOptions(SANE_Handle dev)
 {
     SANE_Status status;
     SANE_Word val;
     SANE_Int num_options, i;
     const SANE_Option_Descriptor *option_desc;
-    const QRectF scanArea = Settings::instance()->scanGeometry(mediaType);
 
-    qDebug() << "set options for" << mediaType << scanArea;
+    qDebug() << "set options for" << m_bounds;
     status = sane_control_option(dev, 0, SANE_ACTION_GET_VALUE, &num_options, 0);
     if (status != SANE_STATUS_GOOD) {
         qDebug("failed to get the number of options");
@@ -165,22 +164,22 @@ void ImageScanner::setOptions(SANE_Handle dev, QString mediaType)
                 if (status != SANE_STATUS_GOOD)
                     qDebug() << "failed to set resolution";
             } else if (strncmp(optName, SANE_NAME_SCAN_TL_X, sizeof(SANE_NAME_SCAN_TL_X)) == 0) {
-                val = SANE_FIX(scanArea.topLeft().x());
+                val = SANE_FIX(m_bounds.topLeft().x());
                 status = sane_control_option(dev, i, SANE_ACTION_SET_VALUE, &val, 0);
                 if (status != SANE_STATUS_GOOD)
                     qDebug() << "failed to set resolution";
             } else if (strncmp(optName, SANE_NAME_SCAN_TL_Y, sizeof(SANE_NAME_SCAN_TL_Y)) == 0) {
-                val = SANE_FIX(scanArea.topLeft().y());
+                val = SANE_FIX(m_bounds.topLeft().y());
                 status = sane_control_option(dev, i, SANE_ACTION_SET_VALUE, &val, 0);
                 if (status != SANE_STATUS_GOOD)
                     qDebug() << "failed to set resolution";
             } else if (strncmp(optName, SANE_NAME_SCAN_BR_X, sizeof(SANE_NAME_SCAN_BR_X)) == 0) {
-                val = SANE_FIX(scanArea.bottomRight().x());
+                val = SANE_FIX(m_bounds.bottomRight().x());
                 status = sane_control_option(dev, i, SANE_ACTION_SET_VALUE, &val, 0);
                 if (status != SANE_STATUS_GOOD)
                     qDebug() << "failed to set resolution";
             } else if (strncmp(optName, SANE_NAME_SCAN_BR_Y, sizeof(SANE_NAME_SCAN_BR_Y)) == 0) {
-                val = SANE_FIX(scanArea.bottomRight().y());
+                val = SANE_FIX(m_bounds.bottomRight().y());
                 status = sane_control_option(dev, i, SANE_ACTION_SET_VALUE, &val, 0);
                 if (status != SANE_STATUS_GOOD)
                     qDebug() << "failed to set resolution";
